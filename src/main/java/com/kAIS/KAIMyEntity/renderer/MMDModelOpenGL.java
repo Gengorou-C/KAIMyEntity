@@ -1,15 +1,18 @@
 package com.kAIS.KAIMyEntity.renderer;
 
-import com.kAIS.KAIMyEntity.KAIMyEntityClient;
+import com.kAIS.KAIMyEntity.KAIMyEntity;
 import com.kAIS.KAIMyEntity.NativeFunc;
+
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.render.Shader;
-import net.minecraft.client.texture.TextureManager;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Vec3f;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.texture.TextureManager;
+
 import org.lwjgl.opengl.GL46C;
 
 import java.nio.ByteBuffer;
@@ -65,10 +68,10 @@ public class MMDModelOpenGL implements IMMDModel {
         else
             model = nf.LoadModelPMX(modelFilename, modelDir, layerCount);
         if (model == 0) {
-            KAIMyEntityClient.logger.info(String.format("Cannot open model: '%s'.", modelFilename));
+            KAIMyEntity.logger.info(String.format("Cannot open model: '%s'.", modelFilename));
             return null;
         }
-        BufferRenderer.unbindAll();
+        BufferUploader.reset();
         //Model exists,now we prepare data for OpenGL
         int vertexArrayObject = GL46C.glGenVertexArrays();
         int indexBufferObject = GL46C.glGenBuffers();
@@ -137,7 +140,7 @@ public class MMDModelOpenGL implements IMMDModel {
         nf.DeleteModel(model.model);
     }
 
-    public void Render(float entityYaw, MatrixStack mat, int packedLight) {
+    public void Render(float entityYaw, PoseStack mat, int packedLight) {
         Update();
         RenderModel(entityYaw, mat);
     }
@@ -162,20 +165,20 @@ public class MMDModelOpenGL implements IMMDModel {
         nf.UpdateModel(model);
     }
 
-    void RenderModel(float entityYaw, MatrixStack deliverStack) {
-        Shader shader = RenderSystem.getShader();
+    void RenderModel(float entityYaw, PoseStack deliverStack) {
+        ShaderInstance shader = RenderSystem.getShader();
 
-        BufferRenderer.unbindAll();
+        BufferUploader.reset();
         GL46C.glBindVertexArray(vertexArrayObject);
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
-        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
-        deliverStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-entityYaw));
+        deliverStack.mulPose(Vector3f.YP.rotationDegrees(-entityYaw));
         deliverStack.scale(0.09f, 0.09f, 0.09f);
-        shader.modelViewMat.set(deliverStack.peek().getPositionMatrix());
-        FloatBuffer modelViewMatBuff = shader.modelViewMat.getFloatData();
-        FloatBuffer projViewMatBuff = shader.projectionMat.getFloatData();
+        shader.MODEL_VIEW_MATRIX.set(deliverStack.last().pose());
+        FloatBuffer modelViewMatBuff = shader.MODEL_VIEW_MATRIX.getFloatBuffer();
+        FloatBuffer projViewMatBuff = shader.PROJECTION_MATRIX.getFloatBuffer();
 
 
         GL46C.glEnableVertexAttribArray(positionLocation);
@@ -215,7 +218,7 @@ public class MMDModelOpenGL implements IMMDModel {
                 RenderSystem.enableCull();
             }
             if (mats[materialID].tex == 0)
-                MinecraftClient.getInstance().getEntityRenderDispatcher().textureManager.bindTexture(TextureManager.MISSING_IDENTIFIER);
+                Minecraft.getInstance().getEntityRenderDispatcher().textureManager.bindForSetup(TextureManager.INTENTIONAL_MISSING_TEXTURE);
             else
                 GL46C.glBindTexture(GL46C.GL_TEXTURE_2D, mats[materialID].tex);
             long startPos = (long) nf.GetSubMeshBeginIndex(model, i) * indexElementSize;
@@ -225,7 +228,7 @@ public class MMDModelOpenGL implements IMMDModel {
             GL46C.glDrawElements(GL46C.GL_TRIANGLES, count, indexType, startPos);
         }
         GL46C.glUseProgram(0);
-        BufferRenderer.unbindAll();
+        BufferUploader.reset();
     }
 
     static class Material {

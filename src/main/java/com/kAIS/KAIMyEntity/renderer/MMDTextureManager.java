@@ -1,7 +1,8 @@
 package com.kAIS.KAIMyEntity.renderer;
 
-import com.kAIS.KAIMyEntity.KAIMyEntityClient;
+import com.kAIS.KAIMyEntity.KAIMyEntity;
 import com.kAIS.KAIMyEntity.NativeFunc;
+
 import org.lwjgl.opengl.GL46C;
 
 import java.nio.ByteBuffer;
@@ -22,7 +23,7 @@ public class MMDTextureManager {
         if (result == null) {
             long nfTex = nf.LoadTexture(filename);
             if (nfTex == 0) {
-                KAIMyEntityClient.logger.info(String.format("Cannot find texture: %s", filename));
+                KAIMyEntity.logger.info(String.format("Cannot find texture: %s", filename));
                 return null;
             }
             int x = nf.GetTextureX(nfTex);

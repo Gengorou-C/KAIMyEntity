@@ -1,75 +1,111 @@
 package com.kAIS.KAIMyEntity.register;
 
-import com.kAIS.KAIMyEntity.KAIMyEntityClient;
+import com.kAIS.KAIMyEntity.KAIMyEntity;
+import com.kAIS.KAIMyEntity.network.KAIMyEntityNetworkPack;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRenderFactory;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.EntityType;
+
+import com.mojang.blaze3d.platform.InputConstants;
+
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.client.ClientRegistry;
+import net.minecraftforge.client.settings.KeyConflictContext;
+import net.minecraftforge.client.settings.KeyModifier;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers;
+import net.minecraftforge.fml.common.Mod;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.world.entity.EntityType;
+
 import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
 
-@Environment(EnvType.CLIENT)
+@Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class KAIMyEntityRegisterClient {
-    static KeyBinding keyResetPhysics = new KeyBinding("key.resetPhysics", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, "key.title");
-    static KeyBinding keyReloadModels = new KeyBinding("key.reloadModels", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_KP_1, "key.title");
-    static KeyBinding keyCustomAnim1 = new KeyBinding("key.customAnim1", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V, "key.title");
-    static KeyBinding keyCustomAnim2 = new KeyBinding("key.customAnim2", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_B, "key.title");
-    static KeyBinding keyCustomAnim3 = new KeyBinding("key.customAnim3", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_N, "key.title");
-    static KeyBinding keyCustomAnim4 = new KeyBinding("key.customAnim4", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_M, "key.title");
-    static KeyBinding[] keyBindings = new KeyBinding[]{keyCustomAnim1, keyCustomAnim2, keyCustomAnim3, keyCustomAnim4, keyReloadModels, keyResetPhysics};
-    static KeyBinding[] customKeyBindings = new KeyBinding[]{keyCustomAnim1, keyCustomAnim2, keyCustomAnim3, keyCustomAnim4};
+    static KeyMapping keyResetPhysics = new KeyMapping("key.resetPhysics", KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_K, "key.title");
+    static KeyMapping keyReloadModels = new KeyMapping("key.reloadModels", KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_KP_1, "key.title");
+    static KeyMapping keyCustomAnim1 = new KeyMapping("key.customAnim1", KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, "key.title");
+    static KeyMapping keyCustomAnim2 = new KeyMapping("key.customAnim2", KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, "key.title");
+    static KeyMapping keyCustomAnim3 = new KeyMapping("key.customAnim3", KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_N, "key.title");
+    static KeyMapping keyCustomAnim4 = new KeyMapping("key.customAnim4", KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_M, "key.title");
 
     public static void Register() {
+        RegisterRenderers RR = new RegisterRenderers();
+        for (KeyMapping i : new KeyMapping[]{keyCustomAnim1, keyCustomAnim2, keyCustomAnim3, keyCustomAnim4, keyReloadModels, keyResetPhysics})
+            ClientRegistry.registerKeyBinding(i);
 
-        for (KeyBinding i : keyBindings)
-            KeyBindingHelper.registerKeyBinding(i);
-        for (int i = 0; i < customKeyBindings.length; i++) {
-            int finalI = i;
-            ClientTickEvents.END_CLIENT_TICK.register(client -> {
-                while (customKeyBindings[finalI].wasPressed()) {
-                    onCustomKeyDown(finalI + 1);
-                }
-            });
-        }
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (keyReloadModels.wasPressed()) {
-                MMDModelManager.ReloadModel();
-            }
-        });
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (keyResetPhysics.wasPressed()) {
-                onKeyResetPhysicsDown();
-            }
-        });
-
-        File[] modelDirs = new File(MinecraftClient.getInstance().runDirectory, "KAIMyEntity").listFiles();
+        File[] modelDirs = new File(Minecraft.getInstance().gameDirectory, "KAIMyEntity").listFiles();
         if (modelDirs != null) {
             for (File i : modelDirs) {
                 if (!i.getName().equals("EntityPlayer")) {
                     String mcEntityName = i.getName().replace('.', ':');
-                    if (EntityType.get(mcEntityName).isPresent())
-                        EntityRendererRegistry.register(EntityType.get(mcEntityName).get(), new KAIMyEntityRenderFactory<>(mcEntityName));
+                    if (EntityType.byString(mcEntityName).isPresent())
+                        RR.registerEntityRenderer(EntityType.byString(mcEntityName).get(), new KAIMyEntityRenderFactory<>(mcEntityName));
                     else
-                        KAIMyEntityClient.logger.warn(mcEntityName + "not present,ignore rendering it!");
+                        KAIMyEntity.logger.warn(mcEntityName + " not present, ignore rendering it!");
                 }
             }
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onKeyPressed(InputEvent.KeyInputEvent event) {
+        if (keyCustomAnim1.isDown()) {
+            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + Minecraft.getInstance().player.getName().getString());
+            if (m != null) {
+                KAIMyEntityRendererPlayerHelper.CustomAnim(Minecraft.getInstance().player, "1");
+                assert Minecraft.getInstance().player != null;
+                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, Minecraft.getInstance().player.getUUID(), 1));
+            }
+        }
+        if (keyReloadModels.isDown()) {
+            MMDModelManager.ReloadModel();
+        }
+        if (keyCustomAnim2.isDown()) {
+            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + Minecraft.getInstance().player.getName().getString());
+            if (m != null) {
+                KAIMyEntityRendererPlayerHelper.CustomAnim(Minecraft.getInstance().player, "2");
+                assert Minecraft.getInstance().player != null;
+                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, Minecraft.getInstance().player.getUUID(), 2));
+            }
+        }
+        if (keyCustomAnim3.isDown()) {
+            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + Minecraft.getInstance().player.getName().getString());
+            if (m != null) {
+                KAIMyEntityRendererPlayerHelper.CustomAnim(Minecraft.getInstance().player, "3");
+                assert Minecraft.getInstance().player != null;
+                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, Minecraft.getInstance().player.getUUID(), 3));
+            }
+        }
+        if (keyCustomAnim4.isDown()) {
+            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + Minecraft.getInstance().player.getName().getString());
+            if (m != null) {
+                KAIMyEntityRendererPlayerHelper.CustomAnim(Minecraft.getInstance().player, "4");
+                assert Minecraft.getInstance().player != null;
+                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, Minecraft.getInstance().player.getUUID(), 4));
+            }
+        }
+        if (keyResetPhysics.isDown()) {
+            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + Minecraft.getInstance().player.getName().getString());
+            if (m != null) {
+                KAIMyEntityRendererPlayerHelper.ResetPhysics(Minecraft.getInstance().player);
+                assert Minecraft.getInstance().player != null;
+                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(2, Minecraft.getInstance().player.getUUID(), 0));
+            }
+        }
+    }
     public static void onKeyResetPhysicsDown() {
-        KAIMyEntityRendererPlayerHelper.ResetPhysics(MinecraftClient.getInstance().player);
+        KAIMyEntityRendererPlayerHelper.ResetPhysics(Minecraft.getInstance().player);
     }
 
     public static void onCustomKeyDown(Integer numOfKey) {
-        KAIMyEntityRendererPlayerHelper.CustomAnim(MinecraftClient.getInstance().player, numOfKey.toString());
+        KAIMyEntityRendererPlayerHelper.CustomAnim(Minecraft.getInstance().player, numOfKey.toString());
     }
 }

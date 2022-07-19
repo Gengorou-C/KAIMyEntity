@@ -1,13 +1,49 @@
 package com.kAIS.KAIMyEntity;
 
-import net.fabricmc.api.ModInitializer;
+import com.kAIS.KAIMyEntity.config.KAIMyEntityConfig;
+import com.kAIS.KAIMyEntity.register.KAIMyEntityRegisterClient;
+import com.kAIS.KAIMyEntity.register.KAIMyEntityRegisterCommon;
+import com.kAIS.KAIMyEntity.renderer.MMDAnimManager;
+import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
+import com.kAIS.KAIMyEntity.renderer.MMDTextureManager;
+
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class KAIMyEntity implements ModInitializer {
-    public static final Logger logger = LogManager.getLogger();
+@Mod("kaimyentity")
+public class KAIMyEntity {
+    public static Logger logger = LogManager.getLogger();
 
-    @Override
-    public void onInitialize() {
+    public KAIMyEntity() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, KAIMyEntityConfig.config);
+    }
+
+    public void preInit(FMLCommonSetupEvent event) {
+        logger.info("KAIMyEntity preInit begin...");
+
+        KAIMyEntityRegisterCommon.Register();
+
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            MMDModelManager.Init();
+            logger.info("MMDModelManager.Init() finished.");
+            MMDTextureManager.Init();
+            logger.info("MMDTextureManager.Init() finished.");
+            MMDAnimManager.Init();
+            logger.info("MMDAnimManager.Init() finished.");
+            KAIMyEntityRegisterClient.Register();
+            logger.info("KAIMyEntityRegisterClient.Register() finished.");
+        } else {
+            logger.info("KAIMyEntity running on server.");
+        }
+        logger.info("KAIMyEntity preInit successful.");
     }
 }

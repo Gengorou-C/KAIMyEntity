@@ -4,18 +4,20 @@ import com.kAIS.KAIMyEntity.NativeFunc;
 import com.kAIS.KAIMyEntity.renderer.IMMDModel;
 import com.kAIS.KAIMyEntity.renderer.MMDAnimManager;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.LivingEntityRenderer;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.entity.model.PlayerEntityModel;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+
+import net.minecraft.world.InteractionHand;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -23,15 +25,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Objects;
 
-@Mixin(PlayerEntityRenderer.class)
-public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
+@Mixin(PlayerRenderer.class)
+public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
 
-    public KAIMyEntityPlayerRendererMixin(EntityRendererFactory.Context ctx, PlayerEntityModel<AbstractClientPlayerEntity> model, float shadowRadius) {
+    public KAIMyEntityPlayerRendererMixin(Context ctx, PlayerModel<AbstractClientPlayer> model, float shadowRadius) {
         super(ctx, model, shadowRadius);
     }
 
-    @Inject(method = {"render"}, at = @At("HEAD"), cancellable = true)
-    public void render(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, VertexConsumerProvider vertexConsumers, int packedLightIn, CallbackInfo ci) {
+    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
+    public void render(AbstractClientPlayer entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, CallbackInfo ci) {
         IMMDModel model = null;
         MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + entityIn.getName().getString());
         if (m == null)
@@ -50,42 +52,48 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.ElytraFly, 0);
                 } else if (entityIn.isSleeping()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Sleep, 0);
-                } else if (entityIn.hasVehicle()) {
+                } else if (entityIn.isPassenger()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Ride, 0);
                 } else if (entityIn.isSwimming()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Swim, 0);
-                } else if (entityIn.isClimbing()) {
+                } else if (entityIn.onClimbable()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.OnLadder, 0);
-                } else if (entityIn.isSprinting()) {
+                } else if (entityIn.isSprinting() && (!entityIn.isCrouching())) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Sprint, 0);
-                } else if (entityIn.getX() - entityIn.prevX != 0.0f || entityIn.getZ() - entityIn.prevZ != 0.0f) {
+                } else if (entityIn.getX() - entityIn.xOld != 0.0f || entityIn.getZ() - entityIn.zOld != 0.0f) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Walk, 0);
                 } else {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Idle, 0);
                 }
 
                 //Layer 1
-                if (entityIn.getActiveItem() != ItemStack.EMPTY) {
-                    if (entityIn.getActiveHand() == Hand.MAIN_HAND) {
-                        CustomItemActiveAnim(mwpd, MMDModelManager.PlayerData.EntityState.ItemRight, Objects.requireNonNull(entityIn.getActiveItem().getItem().getName()).toString().replace(':', '.'), false);
+                if (entityIn.isUsingItem()) {
+                    if (entityIn.getUsedItemHand() == InteractionHand.MAIN_HAND) {
+                        CustomItemActiveAnim(mwpd, MMDModelManager.PlayerData.EntityState.ItemRight, Objects.requireNonNull(entityIn.getUseItem().getItem().getName(entityIn.getUseItem())).toString().replace(':', '.'), false);
                     } else {
-                        CustomItemActiveAnim(mwpd, MMDModelManager.PlayerData.EntityState.ItemLeft, Objects.requireNonNull(entityIn.getActiveItem().getItem().getName()).toString().replace(':', '.'), true);
+                        CustomItemActiveAnim(mwpd, MMDModelManager.PlayerData.EntityState.ItemLeft, Objects.requireNonNull(entityIn.getUseItem().getItem().getName(entityIn.getUseItem())).toString().replace(':', '.'), true);
                     }
-                } else if (entityIn.handSwinging) {
-                    if (entityIn.preferredHand == Hand.MAIN_HAND) {
+                } else if (entityIn.swinging) {
+                    if (entityIn.getUsedItemHand() == InteractionHand.MAIN_HAND) {
                         AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.SwingRight, 1);
-                    } else if (entityIn.preferredHand == Hand.OFF_HAND) {
+                    } else if (entityIn.getUsedItemHand() == InteractionHand.OFF_HAND) {
                         AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.SwingLeft, 1);
                     }
                 } else {
-                    AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Idle, 1);
+                    if (mwpd.playerData.stateLayers[1] != MMDModelManager.PlayerData.EntityState.Idle) {
+                        mwpd.playerData.stateLayers[1] = MMDModelManager.PlayerData.EntityState.Idle;
+                        model.ChangeAnim(0, 1);
+                    }
                 }
 
                 //Layer 2
-                if (entityIn.isSneaking()) {
+                if (entityIn.isCrouching()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Sneak, 2);
                 } else {
-                    AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Idle, 2);
+                    if (mwpd.playerData.stateLayers[2] != MMDModelManager.PlayerData.EntityState.Idle) {
+                        mwpd.playerData.stateLayers[2] = MMDModelManager.PlayerData.EntityState.Idle;
+                        model.ChangeAnim(0, 2);
+                    }
                 }
             }
 
@@ -93,14 +101,14 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
 
             NativeFunc nf = NativeFunc.GetInst();
             nf.GetRightHandMat(model.GetModelLong(), mwpd.playerData.rightHandMat);
-            matrixStackIn.push();
-            MinecraftClient.getInstance().getItemRenderer().renderItem(entityIn, entityIn.getMainHandStack(), ModelTransformation.Mode.THIRD_PERSON_RIGHT_HAND, false, matrixStackIn, vertexConsumers, entityIn.world, packedLightIn, OverlayTexture.DEFAULT_UV, 0);
-            matrixStackIn.pop();
+            matrixStackIn.pushPose();
+            Minecraft.getInstance().getItemRenderer().renderStatic(entityIn, entityIn.getMainHandItem(), ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, false, matrixStackIn, bufferIn, entityIn.level, packedLightIn, OverlayTexture.NO_OVERLAY, 0);
+            matrixStackIn.popPose();
 
             nf.GetLeftHandMat(model.GetModelLong(), mwpd.playerData.leftHandMat);
-            matrixStackIn.push();
-            MinecraftClient.getInstance().getItemRenderer().renderItem(entityIn, entityIn.getOffHandStack(), ModelTransformation.Mode.THIRD_PERSON_LEFT_HAND, true, matrixStackIn, vertexConsumers, entityIn.world, packedLightIn, OverlayTexture.DEFAULT_UV, 0);
-            matrixStackIn.pop();
+            matrixStackIn.pushPose();
+            Minecraft.getInstance().getItemRenderer().renderStatic(entityIn, entityIn.getOffhandItem(), ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND, true, matrixStackIn, bufferIn, entityIn.level, packedLightIn, OverlayTexture.NO_OVERLAY, 0);
+            matrixStackIn.popPose();
         }
         ci.cancel();//Added By FMyuchuan. | 隐藏模型脚下的史蒂夫
     }

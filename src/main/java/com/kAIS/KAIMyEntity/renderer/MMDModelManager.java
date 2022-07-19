@@ -1,7 +1,8 @@
 package com.kAIS.KAIMyEntity.renderer;
 
 import com.kAIS.KAIMyEntity.NativeFunc;
-import net.minecraft.client.MinecraftClient;
+
+import net.minecraft.client.Minecraft;
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -17,7 +18,7 @@ public class MMDModelManager {
 
     public static IMMDModel LoadModel(String modelName, long layerCount) {
         //Model path
-        File modelDir = new File(MinecraftClient.getInstance().runDirectory, "KAIMyEntity/" + modelName);
+        File modelDir = new File(Minecraft.getInstance().gameDirectory, "KAIMyEntity/" + modelName);
         String modelDirStr = modelDir.getAbsolutePath();
 
         String modelFilenameStr;
