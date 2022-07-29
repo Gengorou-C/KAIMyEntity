@@ -28,12 +28,12 @@ import java.io.File;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class KAIMyEntityRegisterClient {
-    static KeyMapping keyResetPhysics = new KeyMapping("key.resetPhysics", KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_K, "key.title");
-    static KeyMapping keyReloadModels = new KeyMapping("key.reloadModels", KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_KP_1, "key.title");
     static KeyMapping keyCustomAnim1 = new KeyMapping("key.customAnim1", KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, "key.title");
     static KeyMapping keyCustomAnim2 = new KeyMapping("key.customAnim2", KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, "key.title");
     static KeyMapping keyCustomAnim3 = new KeyMapping("key.customAnim3", KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_N, "key.title");
     static KeyMapping keyCustomAnim4 = new KeyMapping("key.customAnim4", KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_M, "key.title");
+    static KeyMapping keyReloadModels = new KeyMapping("key.reloadModels", KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_KP_1, "key.title");
+    static KeyMapping keyResetPhysics = new KeyMapping("key.resetPhysics", KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_K, "key.title");
 
     public static void Register() {
         RegisterRenderers RR = new RegisterRenderers();
@@ -45,10 +45,12 @@ public class KAIMyEntityRegisterClient {
             for (File i : modelDirs) {
                 if (!i.getName().equals("EntityPlayer")) {
                     String mcEntityName = i.getName().replace('.', ':');
-                    if (EntityType.byString(mcEntityName).isPresent())
+                    if (EntityType.byString(mcEntityName).isPresent()){
                         RR.registerEntityRenderer(EntityType.byString(mcEntityName).get(), new KAIMyEntityRenderFactory<>(mcEntityName));
-                    else
+                        KAIMyEntity.logger.info(mcEntityName + " is present, rendering it.");
+                    }else{
                         KAIMyEntity.logger.warn(mcEntityName + " not present, ignore rendering it!");
+                    }
                 }
             }
         }
@@ -64,9 +66,6 @@ public class KAIMyEntityRegisterClient {
                 assert Minecraft.getInstance().player != null;
                 KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, Minecraft.getInstance().player.getUUID(), 1));
             }
-        }
-        if (keyReloadModels.isDown()) {
-            MMDModelManager.ReloadModel();
         }
         if (keyCustomAnim2.isDown()) {
             MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + Minecraft.getInstance().player.getName().getString());
@@ -92,6 +91,9 @@ public class KAIMyEntityRegisterClient {
                 KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, Minecraft.getInstance().player.getUUID(), 4));
             }
         }
+        if (keyReloadModels.isDown()) {
+            MMDModelManager.ReloadModel();
+        }
         if (keyResetPhysics.isDown()) {
             MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + Minecraft.getInstance().player.getName().getString());
             if (m != null) {
@@ -100,12 +102,5 @@ public class KAIMyEntityRegisterClient {
                 KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(2, Minecraft.getInstance().player.getUUID(), 0));
             }
         }
-    }
-    public static void onKeyResetPhysicsDown() {
-        KAIMyEntityRendererPlayerHelper.ResetPhysics(Minecraft.getInstance().player);
-    }
-
-    public static void onCustomKeyDown(Integer numOfKey) {
-        KAIMyEntityRendererPlayerHelper.CustomAnim(Minecraft.getInstance().player, numOfKey.toString());
     }
 }

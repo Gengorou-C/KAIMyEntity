@@ -25,8 +25,8 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
     }
 
     @Override
-    public void render(T entityIn, float entityYaw, float partialTicks, PoseStack PoseStackIn, MultiBufferSource bufferIn, int packedLightIn) {
-        super.render(entityIn, entityYaw, partialTicks, PoseStackIn, bufferIn, packedLightIn);
+    public void render(T entityIn, float entityYaw, float partialTicks, PoseStack poseStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+        super.render(entityIn, entityYaw, partialTicks, poseStackIn, bufferIn, packedLightIn);
         String animName;
         if (entityIn.isVehicle()) {
             animName = "ridden";
@@ -39,9 +39,9 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
         }
         MMDModelManager.Model model = MMDModelManager.GetNotPlayerModel(modelName, animName);
         if (model != null) {
-            PoseStackIn.pushPose();
-            model.model.Render(entityIn, entityYaw, PoseStackIn, packedLightIn);
-            PoseStackIn.popPose();
+            poseStackIn.pushPose();
+            model.model.Render(entityIn, entityYaw, poseStackIn, packedLightIn);
+            poseStackIn.popPose();
         }
     }
 

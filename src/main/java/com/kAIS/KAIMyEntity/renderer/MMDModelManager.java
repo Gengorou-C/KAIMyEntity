@@ -44,30 +44,30 @@ public class MMDModelManager {
         return MMDModelOpenGL.Create(modelFilenameStr, modelDirStr, isPMD, layerCount);
     }
 
-    public static Model GetNotPlayerModel(String entityName, String animPlaying) {
-        Model model = models.get(entityName + animPlaying);
+    public static Model GetNotPlayerModel(String modelName, String animPlaying) {
+        Model model = models.get(modelName + animPlaying);
         if (model == null) {
-            IMMDModel m = LoadModel(entityName, 1);
+            IMMDModel m = LoadModel(modelName, 1);
             if (m == null)
                 return null;
             MMDAnimManager.AddModel(m);
-            AddModel(entityName + animPlaying, m, entityName, false);
-            model = models.get(entityName + animPlaying);
+            AddModel(modelName + animPlaying, m, modelName, false);
+            model = models.get(modelName + animPlaying);
             model.model.ChangeAnim(MMDAnimManager.GetAnimModel(model.model, animPlaying), 0);
         }
         return model;
 
     }
 
-    public static Model GetPlayerModel(String playerName) {
-        Model model = models.get(playerName);
+    public static Model GetPlayerModel(String modelName) {
+        Model model = models.get(modelName);
         if (model == null) {
-            IMMDModel m = LoadModel(playerName, 3);
+            IMMDModel m = LoadModel(modelName, 3);
             if (m == null)
                 return null;
             MMDAnimManager.AddModel(m);
-            AddModel(playerName, m, playerName, true);
-            model = models.get(playerName);
+            AddModel(modelName, m, modelName, true);
+            model = models.get(modelName);
         }
         return model;
 
@@ -153,7 +153,7 @@ public class MMDModelManager {
             put(EntityState.Walk, "walk");
             put(EntityState.Sprint, "sprint");
             put(EntityState.Air, "air");
-            put(EntityState.OnLadder, "onLadder");
+            put(EntityState.OnClimbable, "onClimbable");
             put(EntityState.Swim, "swim");
             put(EntityState.Ride, "ride");
             put(EntityState.Sleep, "sleep");
@@ -168,6 +168,6 @@ public class MMDModelManager {
         public EntityState[] stateLayers;
         ByteBuffer matBuffer;
 
-        public enum EntityState {Idle, Walk, Sprint, Air, OnLadder, Swim, Ride, Sleep, ElytraFly, Die, SwingRight, SwingLeft, ItemRight, ItemLeft, Sneak}
+        public enum EntityState {Idle, Walk, Sprint, Air, OnClimbable, Swim, Ride, Sleep, ElytraFly, Die, SwingRight, SwingLeft, ItemRight, ItemLeft, Sneak}
     }
 }
