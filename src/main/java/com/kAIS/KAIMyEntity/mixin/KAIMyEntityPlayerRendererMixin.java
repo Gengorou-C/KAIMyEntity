@@ -93,7 +93,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 }
             }
 
-            model.Render(entityYaw, poseStackIn, packedLightIn);
+            model.Render(entityIn, entityYaw, poseStackIn, packedLightIn);
 
             NativeFunc nf = NativeFunc.GetInst();
             float rotationDegree = 0.0f;

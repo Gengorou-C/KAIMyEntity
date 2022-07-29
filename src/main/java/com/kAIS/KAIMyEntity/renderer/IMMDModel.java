@@ -2,8 +2,10 @@ package com.kAIS.KAIMyEntity.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.world.entity.Entity;
+
 public interface IMMDModel {
-    void Render(float entityYaw, PoseStack mat, int packedLight);
+    void Render(Entity entityIn, float entityYaw, PoseStack mat, int packedLight);
 
     void ChangeAnim(long anim, long layer);
 

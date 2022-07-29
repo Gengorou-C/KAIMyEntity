@@ -10,8 +10,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.world.entity.Entity;
 
 import org.lwjgl.opengl.GL46C;
 
@@ -26,6 +28,7 @@ public class MMDModelOpenGL implements IMMDModel {
     static int projMatLocation;
     static int modelViewLocation;
     static int samplerLocation;
+    static int lightLevelLocation;
     static boolean isShaderInited = false;
     long model;
     String modelDir;
@@ -55,6 +58,7 @@ public class MMDModelOpenGL implements IMMDModel {
         projMatLocation = GL46C.glGetUniformLocation(shaderProgram, "ProjMat");
         modelViewLocation = GL46C.glGetUniformLocation(shaderProgram, "ModelViewMat");
         samplerLocation = GL46C.glGetUniformLocation(shaderProgram, "Sampler0");
+        lightLevelLocation = GL46C.glGetUniformLocation(shaderProgram, "lightLevel");
         isShaderInited = true;
     }
 
@@ -140,9 +144,9 @@ public class MMDModelOpenGL implements IMMDModel {
         nf.DeleteModel(model.model);
     }
 
-    public void Render(float entityYaw, PoseStack mat, int packedLight) {
+    public void Render(Entity entityIn, float entityYaw, PoseStack mat, int packedLight) {
         Update();
-        RenderModel(entityYaw, mat);
+        RenderModel(entityIn, entityYaw, mat);
     }
 
     public void ChangeAnim(long anim, long layer) {
@@ -165,8 +169,9 @@ public class MMDModelOpenGL implements IMMDModel {
         nf.UpdateModel(model);
     }
 
-    void RenderModel(float entityYaw, PoseStack deliverStack) {
+    void RenderModel(Entity entityIn, float entityYaw, PoseStack deliverStack) {
         ShaderInstance shader = RenderSystem.getShader();
+        float lightLevel = getLightLevel(entityIn);
 
         BufferUploader.reset();
         GL46C.glBindVertexArray(vertexArrayObject);
@@ -203,6 +208,7 @@ public class MMDModelOpenGL implements IMMDModel {
 
         GL46C.glBindBuffer(GL46C.GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
         GL46C.glUseProgram(shaderProgram);
+        GL46C.glUniform1f(lightLevelLocation, lightLevel);
         GL46C.glUniformMatrix4fv(modelViewLocation, false, modelViewMatBuff);
         GL46C.glUniformMatrix4fv(projMatLocation, false, projViewMatBuff);
         long subMeshCount = nf.GetSubMeshCount(model);
@@ -239,5 +245,19 @@ public class MMDModelOpenGL implements IMMDModel {
             tex = 0;
             hasAlpha = false;
         }
+    }
+
+    static float getLightLevel(Entity entityIn){
+        ClientLevel level = Minecraft.getInstance().level;
+        double CosSun = Math.cos(level.getSunAngle(0.0f));
+        double sunStrength = 8 + ( 8*CosSun );
+        double moonStrength = 5 - CosSun;
+        double skyStrength = Math.max(sunStrength, moonStrength);
+        if(level.getLevelData().isRaining())
+            skyStrength = skyStrength*(12.0/15.0);
+        double relay01 = Math.min(level.getLightEngine().getRawBrightness(entityIn.blockPosition(), 0), skyStrength);
+        double relay02 = Math.max(level.getLightEngine().getRawBrightness(entityIn.blockPosition(), 15), relay01);
+        double lightLevel = Math.max(2.0, relay02);
+        return (float)lightLevel;
     }
 }

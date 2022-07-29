@@ -40,7 +40,7 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
         MMDModelManager.Model model = MMDModelManager.GetNotPlayerModel(modelName, animName);
         if (model != null) {
             PoseStackIn.pushPose();
-            model.model.Render(entityYaw, PoseStackIn, packedLightIn);
+            model.model.Render(entityIn, entityYaw, PoseStackIn, packedLightIn);
             PoseStackIn.popPose();
         }
     }
