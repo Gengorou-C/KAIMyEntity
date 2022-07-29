@@ -13,9 +13,9 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
     protected String modelName;
     protected Context context;
 
-    public KAIMyEntityRenderer(Context renderManager, String modelName) {
+    public KAIMyEntityRenderer(Context renderManager, String entityName) {
         super(renderManager);
-        this.modelName = modelName;
+        this.modelName = entityName.replace(':', '.');
         this.context = renderManager;
     }
 
