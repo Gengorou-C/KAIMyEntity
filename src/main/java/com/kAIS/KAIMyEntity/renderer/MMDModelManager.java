@@ -1,13 +1,18 @@
 package com.kAIS.KAIMyEntity.renderer;
 
+import com.kAIS.KAIMyEntity.KAIMyEntity;
 import com.kAIS.KAIMyEntity.NativeFunc;
 
 import net.minecraft.client.Minecraft;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public class MMDModelManager {
     static Map<String, Model> models;
@@ -121,6 +126,21 @@ public class MMDModelManager {
         public IMMDModel model;
         String entityName;
         String modelName;
+        public Properties properties = new Properties();
+        boolean loadedProperties = false;
+
+        public void loadItemRotationProperties(boolean forceReload){
+            if (loadedProperties && !forceReload)
+                return;
+            String path2Properties = Minecraft.getInstance().gameDirectory.toString() + "/KAIMyEntity/" + modelName + "/itemRotation.properties";
+            try {
+                InputStream istream = new FileInputStream(path2Properties);
+                properties.load(istream);
+            } catch (IOException e) {
+                KAIMyEntity.logger.warn( "KAIMyEntity/" + modelName + "/itemRotation.properties not found" );
+            }
+            loadedProperties = true;
+        } 
     }
 
     public static class ModelWithPlayerData extends Model {
