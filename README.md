@@ -26,11 +26,11 @@ OpenGLなんかチンプンカンプンで、なんならJavaのコードに触�
 ├── KAIMyEntity
 │   ├── DefaultAnim
 │   │   └── (vmdファイル達)
-│   ├── Entity
+│   ├── EntityPlayer
 │   │   ├── (テクスチャのファイルとかフォルダとか)
 │   │   ├── (あるのであればモデル専用のvmdファイル)
 │   │   └── model.pmx(または model.pmd)
-│   ├── Entity_(Your Name)
+│   ├── EntityPlayer_(Your Name)
 │   │   ├── (テクスチャのファイルとかフォルダとか)
 │   │   ├── (あるのであればモデル専用のvmdファイル)
 │   │   └── model.pmx(または model.pmd)
