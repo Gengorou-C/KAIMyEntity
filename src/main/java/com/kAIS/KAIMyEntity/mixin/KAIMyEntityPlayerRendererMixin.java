@@ -43,7 +43,8 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             model = m.model;
 
         MMDModelManager.ModelWithPlayerData mwpd = (MMDModelManager.ModelWithPlayerData) m;
-        mwpd.loadItemRotationProperties(false);
+        if (mwpd != null)
+            mwpd.loadItemRotationProperties(false);
         
         if (model != null) {
             if (!mwpd.playerData.playCustomAnim) {

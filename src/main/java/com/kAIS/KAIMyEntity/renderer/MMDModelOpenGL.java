@@ -207,7 +207,7 @@ public class MMDModelOpenGL implements IMMDModel {
 
 
         GL46C.glBindBuffer(GL46C.GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-        GL46C.glUseProgram(shaderProgram);
+        GlStateManager._glUseProgram(shaderProgram);
         GL46C.glUniform1f(lightLevelLocation, lightLevel);
         GL46C.glUniformMatrix4fv(modelViewLocation, false, modelViewMatBuff);
         GL46C.glUniformMatrix4fv(projMatLocation, false, projViewMatBuff);
@@ -233,7 +233,7 @@ public class MMDModelOpenGL implements IMMDModel {
             GL46C.glUniform1i(samplerLocation, 0);
             GL46C.glDrawElements(GL46C.GL_TRIANGLES, count, indexType, startPos);
         }
-        GL46C.glUseProgram(0);
+        GlStateManager._glUseProgram(0);
         BufferUploader.reset();
     }
 
