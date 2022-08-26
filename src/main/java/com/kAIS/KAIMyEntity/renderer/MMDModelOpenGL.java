@@ -10,14 +10,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.LightLayer;
 
 import org.lwjgl.opengl.GL46C;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 public class MMDModelOpenGL implements IMMDModel {
@@ -25,24 +26,27 @@ public class MMDModelOpenGL implements IMMDModel {
     static int shaderProgram;
     static int positionLocation;
     static int uv0Location;
+    static int uv2Location;
     static int normalLocation;
     static int projMatLocation;
     static int modelViewLocation;
     static int sampler0Location;
-    static int lightLevelLocation;
+    static int sampler2Location;
     static boolean isShaderInited = false;
     long model;
     String modelDir;
     int vertexCount;
-    ByteBuffer posBuffer, norBuffer, uv0Buffer;
+    ByteBuffer posBuffer, norBuffer, uv0Buffer, uv2Buffer;
     int vertexArrayObject;
     int indexBufferObject;
     int vertexBufferObject;
     int normalBufferObject;
     int texcoordBufferObject;
+    int uv2BufferObject;
     int indexElementSize;
     int indexType;
     Material[] mats;
+    Material lightMapMaterial;
 
     MMDModelOpenGL() {
 
@@ -56,11 +60,12 @@ public class MMDModelOpenGL implements IMMDModel {
         //Init ShaderPropLocation
         positionLocation = GL46C.glGetAttribLocation(shaderProgram, "Position");
         uv0Location = GL46C.glGetAttribLocation(shaderProgram, "UV0");
+        uv2Location = GL46C.glGetAttribLocation(shaderProgram, "UV2");
         normalLocation = GL46C.glGetAttribLocation(shaderProgram, "Normal");
         projMatLocation = GL46C.glGetUniformLocation(shaderProgram, "ProjMat");
         modelViewLocation = GL46C.glGetUniformLocation(shaderProgram, "ModelViewMat");
         sampler0Location = GL46C.glGetUniformLocation(shaderProgram, "Sampler0");
-        lightLevelLocation = GL46C.glGetUniformLocation(shaderProgram, "lightLevel");
+        sampler2Location = GL46C.glGetUniformLocation(shaderProgram, "Sampler2");
         isShaderInited = true;
     }
 
@@ -84,11 +89,14 @@ public class MMDModelOpenGL implements IMMDModel {
         int positionBufferObject = GL46C.glGenBuffers();
         int normalBufferObject = GL46C.glGenBuffers();
         int uv0BufferObject = GL46C.glGenBuffers();
+        int uv2BufferObject = GL46C.glGenBuffers();
 
         int vertexCount = (int) nf.GetVertexCount(model);
         ByteBuffer posBuffer = ByteBuffer.allocateDirect(vertexCount * 12); //float * 3
         ByteBuffer norBuffer = ByteBuffer.allocateDirect(vertexCount * 12);
         ByteBuffer uv0Buffer = ByteBuffer.allocateDirect(vertexCount * 8); //float * 2
+        ByteBuffer uv2Buffer = ByteBuffer.allocateDirect(vertexCount * 8); //int * 2
+        uv2Buffer.order(ByteOrder.LITTLE_ENDIAN);
 
         GL46C.glBindVertexArray(vertexArrayObject);
         //Init indexBufferObject
@@ -124,6 +132,14 @@ public class MMDModelOpenGL implements IMMDModel {
             }
         }
 
+        //lightMap
+        MMDModelOpenGL.Material lightMapMaterial = new MMDModelOpenGL.Material();
+        MMDTextureManager.Texture mgrTex = MMDTextureManager.GetTexture(modelDir + "/lightMap.png");
+        if (mgrTex != null) {
+            lightMapMaterial.tex = mgrTex.tex;
+            lightMapMaterial.hasAlpha = mgrTex.hasAlpha;
+        }
+
         MMDModelOpenGL result = new MMDModelOpenGL();
         result.model = model;
         result.modelDir = modelDir;
@@ -131,14 +147,17 @@ public class MMDModelOpenGL implements IMMDModel {
         result.posBuffer = posBuffer;
         result.norBuffer = norBuffer;
         result.uv0Buffer = uv0Buffer;
+        result.uv2Buffer = uv2Buffer;
         result.indexBufferObject = indexBufferObject;
         result.vertexBufferObject = positionBufferObject;
         result.texcoordBufferObject = uv0BufferObject;
+        result.uv2BufferObject = uv2BufferObject;
         result.normalBufferObject = normalBufferObject;
         result.vertexArrayObject = vertexArrayObject;
         result.indexElementSize = indexElementSize;
         result.indexType = indexType;
         result.mats = mats;
+        result.lightMapMaterial = lightMapMaterial;
         return result;
     }
 
@@ -172,8 +191,8 @@ public class MMDModelOpenGL implements IMMDModel {
     }
 
     void RenderModel(Entity entityIn, float entityYaw, PoseStack deliverStack) {
+        Minecraft minecraft = Minecraft.getInstance();
         ShaderInstance shader = RenderSystem.getShader();
-        float lightLevel = getLightLevel(entityIn);
 
         BufferUploader.reset();
         GL46C.glBindVertexArray(vertexArrayObject);
@@ -191,7 +210,6 @@ public class MMDModelOpenGL implements IMMDModel {
         GL46C.glEnableVertexAttribArray(positionLocation);
         RenderSystem.activeTexture(GL46C.GL_TEXTURE0);
         GL46C.glEnableVertexAttribArray(uv0Location);
-        GL46C.glEnableVertexAttribArray(normalLocation);
 
         //Position
         int posAndNorSize = vertexCount * 12; //float * 3
@@ -211,16 +229,43 @@ public class MMDModelOpenGL implements IMMDModel {
 
         //Normal
         if(normalLocation != -1){
+            GL46C.glEnableVertexAttribArray(normalLocation);
             long normalData = nf.GetNormals(model);
             nf.CopyDataToByteBuffer(norBuffer, normalData, posAndNorSize);
             GL46C.glBindBuffer(GL46C.GL_ARRAY_BUFFER, normalBufferObject);
             GL46C.glBufferData(GL46C.GL_ARRAY_BUFFER, norBuffer, GL46C.GL_STATIC_DRAW);
             GL46C.glVertexAttribPointer(normalLocation, 3, GL46C.GL_FLOAT, false, 0, 0);
         }
+        
+
+        //lightMap
+        if((uv2Location != -1) && (lightMapMaterial.tex != 0)){
+            minecraft.level.updateSkyBrightness();
+            int skyBrightness = 16 * entityIn.level.getBrightness(LightLayer.BLOCK, entityIn.blockPosition());
+            int blockBrightness = Math.round((15.0f-minecraft.level.getSkyDarken()) * (entityIn.level.getBrightness(LightLayer.SKY, entityIn.blockPosition())/15.0f) * 16);
+            uv2Buffer.clear();
+            for(int i = 0; i < vertexCount; i++){
+                uv2Buffer.putInt(skyBrightness);
+                uv2Buffer.putInt(blockBrightness);
+            }
+            uv2Buffer.flip();
+
+            GL46C.glEnableVertexAttribArray(uv2Location);
+            GL46C.glBindBuffer(GL46C.GL_ARRAY_BUFFER, uv2BufferObject);
+            GL46C.glBufferData(GL46C.GL_ARRAY_BUFFER, uv2Buffer, GL46C.GL_STATIC_DRAW);
+            GL46C.glVertexAttribIPointer(uv2Location, 2, GL46C.GL_INT, 0, 0);
+        }
 
         GL46C.glBindBuffer(GL46C.GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
         GlStateManager._glUseProgram(shaderProgram);
-        GL46C.glUniform1f(lightLevelLocation, lightLevel);
+
+        if(sampler2Location != -1){
+            RenderSystem.activeTexture(GL46C.GL_TEXTURE2);
+            RenderSystem.bindTexture(lightMapMaterial.tex);
+            GL46C.glUniform1i(sampler2Location, 2);
+            RenderSystem.activeTexture(GL46C.GL_TEXTURE0);
+        }
+
         GL46C.glUniformMatrix4fv(modelViewLocation, false, modelViewMatBuff);
         GL46C.glUniformMatrix4fv(projMatLocation, false, projViewMatBuff);
         long subMeshCount = nf.GetSubMeshCount(model);
@@ -257,19 +302,5 @@ public class MMDModelOpenGL implements IMMDModel {
             tex = 0;
             hasAlpha = false;
         }
-    }
-
-    static float getLightLevel(Entity entityIn){
-        ClientLevel level = Minecraft.getInstance().level;
-        double CosSun = Math.cos(level.getSunAngle(0.0f));
-        double sunStrength = 8 + ( 8*CosSun );
-        double moonStrength = 5 - CosSun;
-        double skyStrength = Math.max(sunStrength, moonStrength);
-        if(level.getLevelData().isRaining())
-            skyStrength = skyStrength*(12.0/15.0);
-        double relay01 = Math.min(level.getLightEngine().getRawBrightness(entityIn.blockPosition(), 0), skyStrength);
-        double relay02 = Math.max(level.getLightEngine().getRawBrightness(entityIn.blockPosition(), 15), relay01);
-        double lightLevel = Math.max(2.0, relay02);
-        return (float)lightLevel;
     }
 }
