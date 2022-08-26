@@ -25,6 +25,7 @@ public class MMDModelOpenGL implements IMMDModel {
     static int shaderProgram;
     static int positionLocation;
     static int uv0Location;
+    static int normalLocation;
     static int projMatLocation;
     static int modelViewLocation;
     static int sampler0Location;
@@ -55,6 +56,7 @@ public class MMDModelOpenGL implements IMMDModel {
         //Init ShaderPropLocation
         positionLocation = GL46C.glGetAttribLocation(shaderProgram, "Position");
         uv0Location = GL46C.glGetAttribLocation(shaderProgram, "UV0");
+        normalLocation = GL46C.glGetAttribLocation(shaderProgram, "Normal");
         projMatLocation = GL46C.glGetUniformLocation(shaderProgram, "ProjMat");
         modelViewLocation = GL46C.glGetUniformLocation(shaderProgram, "ModelViewMat");
         sampler0Location = GL46C.glGetUniformLocation(shaderProgram, "Sampler0");
@@ -189,7 +191,9 @@ public class MMDModelOpenGL implements IMMDModel {
         GL46C.glEnableVertexAttribArray(positionLocation);
         RenderSystem.activeTexture(GL46C.GL_TEXTURE0);
         GL46C.glEnableVertexAttribArray(uv0Location);
+        GL46C.glEnableVertexAttribArray(normalLocation);
 
+        //Position
         int posAndNorSize = vertexCount * 12; //float * 3
         long posData = nf.GetPoss(model);
         nf.CopyDataToByteBuffer(posBuffer, posData, posAndNorSize);
@@ -197,7 +201,7 @@ public class MMDModelOpenGL implements IMMDModel {
         GL46C.glBufferData(GL46C.GL_ARRAY_BUFFER, posBuffer, GL46C.GL_STATIC_DRAW);
         GL46C.glVertexAttribPointer(positionLocation, 3, GL46C.GL_FLOAT, false, 0, 0);
 
-
+        //UV0
         int uv0Size = vertexCount * 8; //float * 2
         long uv0Data = nf.GetUVs(model);
         nf.CopyDataToByteBuffer(uv0Buffer, uv0Data, uv0Size);
@@ -205,6 +209,14 @@ public class MMDModelOpenGL implements IMMDModel {
         GL46C.glBufferData(GL46C.GL_ARRAY_BUFFER, uv0Buffer, GL46C.GL_STATIC_DRAW);
         GL46C.glVertexAttribPointer(uv0Location, 2, GL46C.GL_FLOAT, false, 0, 0);
 
+        //Normal
+        if(normalLocation != -1){
+            long normalData = nf.GetNormals(model);
+            nf.CopyDataToByteBuffer(norBuffer, normalData, posAndNorSize);
+            GL46C.glBindBuffer(GL46C.GL_ARRAY_BUFFER, normalBufferObject);
+            GL46C.glBufferData(GL46C.GL_ARRAY_BUFFER, norBuffer, GL46C.GL_STATIC_DRAW);
+            GL46C.glVertexAttribPointer(normalLocation, 3, GL46C.GL_FLOAT, false, 0, 0);
+        }
 
         GL46C.glBindBuffer(GL46C.GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
         GlStateManager._glUseProgram(shaderProgram);
