@@ -129,15 +129,15 @@ public class MMDModelManager {
         public Properties properties = new Properties();
         boolean loadedProperties = false;
 
-        public void loadItemRotationProperties(boolean forceReload){
+        public void loadModelProperties(boolean forceReload){
             if (loadedProperties && !forceReload)
                 return;
-            String path2Properties = Minecraft.getInstance().gameDirectory.toString() + "/KAIMyEntity/" + modelName + "/itemRotation.properties";
+            String path2Properties = Minecraft.getInstance().gameDirectory.toString() + "/KAIMyEntity/" + modelName + "/model.properties";
             try {
                 InputStream istream = new FileInputStream(path2Properties);
                 properties.load(istream);
             } catch (IOException e) {
-                KAIMyEntity.logger.warn( "KAIMyEntity/" + modelName + "/itemRotation.properties not found" );
+                KAIMyEntity.logger.warn( "KAIMyEntity/" + modelName + "/model.properties not found" );
             }
             loadedProperties = true;
         } 
@@ -162,12 +162,13 @@ public class MMDModelManager {
             put(EntityState.SwingRight, "swingRight");
             put(EntityState.SwingLeft, "swingLeft");
             put(EntityState.Sneak, "sneak");
+            put(EntityState.OnHorse, "onHorse");
         }};
         public boolean playCustomAnim; //Custom animation played in layer 0.
         public long rightHandMat, leftHandMat;
         public EntityState[] stateLayers;
         ByteBuffer matBuffer;
 
-        public enum EntityState {Idle, Walk, Sprint, Air, OnClimbable, Swim, Ride, Sleep, ElytraFly, Die, SwingRight, SwingLeft, ItemRight, ItemLeft, Sneak}
+        public enum EntityState {Idle, Walk, Sprint, Air, OnClimbable, Swim, Ride, Sleep, ElytraFly, Die, SwingRight, SwingLeft, ItemRight, ItemLeft, Sneak, OnHorse}
     }
 }

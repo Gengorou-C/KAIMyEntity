@@ -1,20 +1,23 @@
 package com.kAIS.KAIMyEntity.mixin;
 
+import com.kAIS.KAIMyEntity.KAIMyEntity;
 import com.kAIS.KAIMyEntity.NativeFunc;
 import com.kAIS.KAIMyEntity.renderer.IMMDModel;
 import com.kAIS.KAIMyEntity.renderer.MMDAnimManager;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager.ModelWithPlayerData;
-
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -44,7 +47,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
 
         MMDModelManager.ModelWithPlayerData mwpd = (MMDModelManager.ModelWithPlayerData) m;
         if (mwpd != null)
-            mwpd.loadItemRotationProperties(false);
+            mwpd.loadModelProperties(false);
         
         if (model != null) {
             if (!mwpd.playerData.playCustomAnim) {
@@ -56,7 +59,11 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 } else if (entityIn.isSleeping()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Sleep, 0);
                 } else if (entityIn.isPassenger()) {
-                    AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Ride, 0);
+                    if(entityIn.getVehicle().getType() == EntityType.HORSE && (entityIn.getX() - entityIn.xOld != 0.0f || entityIn.getZ() - entityIn.zOld != 0.0f)){
+                        AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.OnHorse, 0);
+                    }else{
+                        AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Ride, 0);
+                    }
                 } else if (entityIn.isSwimming()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Swim, 0);
                 } else if (entityIn.onClimbable()) {
@@ -94,6 +101,12 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 }
             }
 
+            mwpd.loadModelProperties(KAIMyEntity.reloadProperties);
+            float size = sizeOfModel(mwpd);
+            if(KAIMyEntity.reloadProperties)
+                KAIMyEntity.reloadProperties = false;
+            poseStackIn.scale(size, size, size);
+            RenderSystem.setShader(GameRenderer::getRendertypeEntityTranslucentShader);
             model.Render(entityIn, entityYaw, poseStackIn, packedLightIn);
 
             NativeFunc nf = NativeFunc.GetInst();
@@ -222,5 +235,12 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
         }
         
         return result;
+    }
+
+    float sizeOfModel(ModelWithPlayerData mwpd){
+        float size = 1.0f;
+        if(mwpd.properties.getProperty("size") != null)
+            size = Float.valueOf(mwpd.properties.getProperty("size"));
+        return size;
     }
 }
