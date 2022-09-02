@@ -40,6 +40,7 @@ public class MMDModelOpenGL implements IMMDModel {
     static int light0Location;
     static int light1Location;
     static int K_positionLocation;
+    static int K_normalLocation;
     static int K_uv0Location;
     static int K_uv2Location;
     static int K_projMatLocation;
@@ -396,6 +397,12 @@ public class MMDModelOpenGL implements IMMDModel {
             GL46C.glBufferData(GL46C.GL_ARRAY_BUFFER, posBuffer, GL46C.GL_STATIC_DRAW);
             GL46C.glVertexAttribPointer(K_positionLocation, 3, GL46C.GL_FLOAT, false, 0, 0);
         }
+        if(K_normalLocation != -1){
+            GL46C.glEnableVertexAttribArray(K_normalLocation);
+            GL46C.glBindBuffer(GL46C.GL_ARRAY_BUFFER, normalBufferObject);
+            GL46C.glBufferData(GL46C.GL_ARRAY_BUFFER, norBuffer, GL46C.GL_STATIC_DRAW);
+            GL46C.glVertexAttribPointer(K_normalLocation, 3, GL46C.GL_FLOAT, false, 0, 0);
+        }
         if(K_uv0Location != -1){
             GL46C.glEnableVertexAttribArray(K_uv0Location);
             GL46C.glBindBuffer(GL46C.GL_ARRAY_BUFFER, texcoordBufferObject);
@@ -491,6 +498,7 @@ public class MMDModelOpenGL implements IMMDModel {
         light1Location = GlStateManager._glGetUniformLocation(shaderProgram, "Light1_Direction");
 
         K_positionLocation = GlStateManager._glGetAttribLocation(shaderProgram, "K_Position");
+        K_normalLocation = GlStateManager._glGetAttribLocation(shaderProgram, "K_Normal");
         K_uv0Location = GlStateManager._glGetAttribLocation(shaderProgram, "K_UV0");
         K_uv2Location = GlStateManager._glGetAttribLocation(shaderProgram, "K_UV2");
         K_projMatLocation = GlStateManager._glGetUniformLocation(shaderProgram, "K_ProjMat");
