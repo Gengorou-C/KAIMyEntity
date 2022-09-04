@@ -106,7 +106,7 @@ MMDShaderを使用している場合はおそらく正常に描画されない�
     ```glsl
     if(KAIMyEntityV == 1){
       texcoord = K_UV0;
-      lightMapColor = texelFetch(K_Sampler2, K_UV2/16, 0);
+		  lmcoord = K_UV2/256.0;
       gl_Position = K_ProjMat * K_ModelViewMat * vec4(K_Position, 1.0);
     }
     ```
@@ -124,8 +124,7 @@ MMDShaderを使用している場合はおそらく正常に描画されない�
 
     ```glsl
     if(KAIMyEntityF == 1){
-      gl_FragData[0] = texture2D(K_Sampler0, texcoord.st) * lightMapColor;
-      gl_FragData[1] = vec4(1.0, 1.0, 0.0, 1.0); 
+      gl_FragData[0] = texture2D(K_Sampler0, texcoord.st);
     }
     ```
 
