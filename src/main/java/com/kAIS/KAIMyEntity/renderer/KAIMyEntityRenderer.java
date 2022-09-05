@@ -1,6 +1,5 @@
 package com.kAIS.KAIMyEntity.renderer;
 
-import com.kAIS.KAIMyEntity.KAIMyEntity;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 

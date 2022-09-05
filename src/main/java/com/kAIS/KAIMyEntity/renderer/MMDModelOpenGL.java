@@ -313,12 +313,12 @@ public class MMDModelOpenGL implements IMMDModel {
 
         //UV2
         minecraft.level.updateSkyBrightness();
-        int skyBrightness = 16 * entityIn.level.getBrightness(LightLayer.BLOCK, entityIn.blockPosition());
-        int blockBrightness = Math.round((15.0f-minecraft.level.getSkyDarken()) * (entityIn.level.getBrightness(LightLayer.SKY, entityIn.blockPosition())/15.0f) * 16);
+        int blockBrightness = 16 * entityIn.level.getBrightness(LightLayer.BLOCK, entityIn.blockPosition());
+        int skyBrightness = Math.round((15.0f-minecraft.level.getSkyDarken()) * (entityIn.level.getBrightness(LightLayer.SKY, entityIn.blockPosition())/15.0f) * 16);
         uv2Buffer.clear();
         for(int i = 0; i < vertexCount; i++){
-            uv2Buffer.putInt(skyBrightness);
             uv2Buffer.putInt(blockBrightness);
+            uv2Buffer.putInt(skyBrightness);
         }
         uv2Buffer.flip();
         if(uv2Location != -1){

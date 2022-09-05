@@ -23,7 +23,7 @@ public class KAIMyEntity {
     public static Logger logger = LogManager.getLogger();
     //public static String[] debugStr = new String[hogehoge];
     public static int usingMMDShader = 0;
-    public static boolean reloadProperties;
+    public static boolean reloadProperties = false;
 
     public KAIMyEntity() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
