@@ -20,8 +20,8 @@ MMDShaderを使用している場合はおそらく正常に描画されない�
 シェーダーの中で編集する必要のあるファイルはgbuffers_entitiesまたはshadowという名前がついたファイルを見ると分かる。  
 
 シェーダーの編集例がWhipped-Creamというフォルダに入っています。(MITライセンスなのでセーフのはず……)  
-使うときは本家(https://github.com/Zi7ar21/Whipped-Cream)からダウンロード、解凍、上書きをしてください。  
-有名なシェーダーを編集してそのまま配布したかったのですが、ほぼ全て原則再配布禁止だったので、代わりに編集方法を以下に書きます。  
+使うときは[本家](https://github.com/Zi7ar21/Whipped-Cream)からダウンロード、解凍、上書きをしてください。  
+有名なシェーダーを編集してそのまま配布したかったのですが、ほぼ全て原則再配布禁止だったので、代わりに編集方法の一例を以下に書きます。  
 明確な根拠とともに「これは再配布にあたる」という指摘が来た時には消します。
 
 - SEUS-Renewed-v1.0.1
@@ -106,7 +106,7 @@ MMDShaderを使用している場合はおそらく正常に描画されない�
     ```glsl
     if(KAIMyEntityV == 1){
       texcoord = K_UV0;
-      lightMapColor = texelFetch(K_Sampler2, K_UV2/16, 0);
+      lmcoord = K_UV2/256.0;
       gl_Position = K_ProjMat * K_ModelViewMat * vec4(K_Position, 1.0);
     }
     ```
@@ -124,8 +124,7 @@ MMDShaderを使用している場合はおそらく正常に描画されない�
 
     ```glsl
     if(KAIMyEntityF == 1){
-      gl_FragData[0] = texture2D(K_Sampler0, texcoord.st) * lightMapColor;
-      gl_FragData[1] = vec4(1.0, 1.0, 0.0, 1.0); 
+      gl_FragData[0] = texture2D(K_Sampler0, texcoord.st);
     }
     ```
 
