@@ -11,16 +11,16 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.client.event.InputEvent;
 //import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.world.entity.EntityType;
 
@@ -41,8 +41,9 @@ public class KAIMyEntityRegisterClient {
 
     public static void Register() {
         RegisterRenderers RR = new RegisterRenderers();
+        RegisterKeyMappingsEvent RKE = new RegisterKeyMappingsEvent(Minecraft.getInstance().options);
         for (KeyMapping i : new KeyMapping[]{keyCustomAnim1, keyCustomAnim2, keyCustomAnim3, keyCustomAnim4, keyReloadModels, keyResetPhysics, keyReloadProperties, keyChangeProgram})
-            ClientRegistry.registerKeyBinding(i);
+            RKE.register(i);
 
         File[] modelDirs = new File(Minecraft.getInstance().gameDirectory, "KAIMyEntity").listFiles();
         if (modelDirs != null) {
@@ -62,7 +63,7 @@ public class KAIMyEntityRegisterClient {
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public static void onKeyPressed(InputEvent.KeyInputEvent event) {
+    public static void onKeyPressed(InputEvent.Key event) {
         if (keyCustomAnim1.isDown()) {
             MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + Minecraft.getInstance().player.getName().getString());
             if (m != null) {
@@ -113,9 +114,9 @@ public class KAIMyEntityRegisterClient {
             KAIMyEntity.usingMMDShader = 1 - KAIMyEntity.usingMMDShader;
             
             if(KAIMyEntity.usingMMDShader == 0)
-                Minecraft.getInstance().gui.getChat().addMessage(new TextComponent("Default shader"));
+                Minecraft.getInstance().gui.getChat().addMessage(Component.literal("Default shader"));
             if(KAIMyEntity.usingMMDShader == 1)
-                Minecraft.getInstance().gui.getChat().addMessage(new TextComponent("MMDShader"));
+                Minecraft.getInstance().gui.getChat().addMessage(Component.literal("MMDShader"));
         }
     }
     
