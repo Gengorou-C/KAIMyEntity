@@ -42,6 +42,10 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
         MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + entityIn.getName().getString());
         if (m == null)
             m = MMDModelManager.GetPlayerModel("EntityPlayer");
+        if (m == null){
+            super.render(entityIn, entityYaw, partialTicks, poseStackIn, bufferIn, packedLightIn);
+            return;
+        } 
         if (m != null)
             model = m.model;
 
