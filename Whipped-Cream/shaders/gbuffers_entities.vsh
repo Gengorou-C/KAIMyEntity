@@ -18,18 +18,21 @@ varying vec4 shadowPos;
 
 attribute vec3 K_Position;
 attribute vec2 K_UV0;
-attribute ivec2 K_UV2;
+in ivec2 K_UV2;
 uniform mat4 K_ModelViewMat;
 uniform mat4 K_ProjMat;
-uniform sampler2D K_Sampler2;
 uniform int KAIMyEntityV;
-out vec4 lightMapColor;
 
 void main()
 {
 	texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
 	lmcoord  = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
 	glcolor = gl_Color;
+
+	if(KAIMyEntityV == 1){
+		texcoord = K_UV0;
+		lmcoord = K_UV2/256.0;
+	}
 	
 	vec4 viewPos = gl_ModelViewMatrix * gl_Vertex;
 	float lightDot = dot(normalize(shadowLightPosition), normalize(gl_NormalMatrix * gl_Normal));
@@ -53,7 +56,5 @@ void main()
 
 	if(KAIMyEntityV == 1){
 		gl_Position = K_ProjMat * K_ModelViewMat * vec4(K_Position, 1.0);
-		lightMapColor = texelFetch(K_Sampler2, K_UV2/16, 0);
-		texcoord = K_UV0;
 	}
 }

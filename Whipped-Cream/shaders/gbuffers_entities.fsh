@@ -26,11 +26,12 @@ const bool shadowtex1Nearest = true;
 
 uniform sampler2D K_Sampler0;
 uniform int KAIMyEntityF;
-in vec4 lightMapColor;
-
 void main()
 {
 	vec4 color = texture2D(texture, texcoord) * glcolor;
+	if(KAIMyEntityF == 1){
+		color = texture2D(K_Sampler0, texcoord);
+	}
 	vec2 lm = lmcoord;
 	if(shadowPos.w > 0.0)
 	{
@@ -74,7 +75,4 @@ void main()
 
 	/* DRAWBUFFERS:0 */
 	gl_FragData[0] = color; // gcolor
-	if(KAIMyEntityF == 1){
-		gl_FragData[0] = texture2D(K_Sampler0, texcoord) * lightMapColor;
 	}
-}
