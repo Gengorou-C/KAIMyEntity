@@ -15,9 +15,9 @@
 現在再配布中、かつ描画がある程度の品質以上のシェーダーは以下の通り。  
 
 
-* [Whipped-Cream](https://github.com/Gengorou-C/Whipped-Cream)([Original](https://github.com/Zi7ar21/Whipped-Cream))
-* [Solas Shader](https://github.com/Gengorou-C/Solas-Shader)([Original](https://github.com/Septonious/Solas-Shader))
-* [Super-Duper-Vanilla](https://github.com/Gengorou-C/Super-Duper-Vanilla)([Original](https://github.com/Eldeston/Super-Duper-Vanilla))
+* Whipped-Cream([modified](https://github.com/Gengorou-C/Whipped-Cream))([Original](https://github.com/Zi7ar21/Whipped-Cream))
+* Solas Shader([modified](https://github.com/Gengorou-C/Solas-Shader))([Original](https://github.com/Septonious/Solas-Shader))
+* Super-Duper-Vanilla([modified](https://github.com/Gengorou-C/Super-Duper-Vanilla))([Original](https://github.com/Eldeston/Super-Duper-Vanilla))
 
 ## Image
 
@@ -52,6 +52,7 @@
 
 本当なら私自身でシェーダーの講座を書き、シェーダーの編集方法を広められれば良いのですが、自分の理解度が全く足りず、できませんでした。  
 編集済みのシェーダーが他のシェーダーを編集する際の手助けになれば幸いです。  
+ライセンス違反がありましたら是非お知らせください。
 <br>
 <br>
 P.S.  
