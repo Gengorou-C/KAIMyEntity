@@ -6,18 +6,22 @@
 
 * OptifineではなくRubidiumとOculusを使う。  
 * 使いたいシェーダーを解凍、編集する必要あり。  
-* MMDShaderを使用している場合はおそらく正常に描画されない。  
-* シェーダーを使用中にモデルを再読み込みすると表示が崩れることがよくある。  
-  * その際は使用するプログラムの変更をするキー(初期設定ではテンキーの3)を押すことでMMDShaderに切り替えてから戻してみる。  
-  * プレイヤー以外のエンティティが停止中、歩行中などに表示がおかしいときは、表示がおかしくなっている時にMMDShaderに切り替えてから素早く戻すと治ることがある。  
+* MMDShaderを使用している場合はおそらく影が正常に描画されない。  
+* モデルが正常に描画されない場合、
+
+  * インベントリを開く。
+  * シェーダーを一度無効化して、そのまま有効化する。(Kキー)
+  * プログラムを一度MMDShaderに切り替えて、そのままもう一度切り替えて元に戻す。(テンキーの0)  
+
+  上記の操作のいずれかを行うと正常に戻ることがあります。
 * シェーダーの中で編集する必要のあるファイルはgbuffers_entitiesまたはshadowという名前がついたファイルを見ると分かる。  
 
-現在再配布中、かつ描画がある程度の品質以上のシェーダーは以下の通り。  
+現在再配布中のシェーダーは以下の通り。  
 
-
-* Whipped-Cream([modified](https://github.com/Gengorou-C/Whipped-Cream))([Original](https://github.com/Zi7ar21/Whipped-Cream))
+* (Forgeのみ？)Whipped-Cream([modified](https://github.com/Gengorou-C/Whipped-Cream))([Original](https://github.com/Zi7ar21/Whipped-Cream))
 * Solas Shader([modified](https://github.com/Gengorou-C/Solas-Shader))([Original](https://github.com/Septonious/Solas-Shader))
 * Super-Duper-Vanilla([modified](https://github.com/Gengorou-C/Super-Duper-Vanilla))([Original](https://github.com/Eldeston/Super-Duper-Vanilla))
+* MakeUpUltraFast-legacy([modified](https://github.com/Gengorou-C/MakeUpUltraFast/tree/legacy))([Original](https://github.com/javiergcim/MakeUpUltraFast/tree/legacy)))
 
 ## Image
 
@@ -32,6 +36,9 @@
 
 * KUDA Shaders(再配布不可)
 ![shader](image/KUDA.png)
+
+* MakeUpUltraFast-legacy
+![shader](image/MakeUp.png)
 
 * SEUS Renewed(再配布不可)
 ![shader](image/SEUS.png)
