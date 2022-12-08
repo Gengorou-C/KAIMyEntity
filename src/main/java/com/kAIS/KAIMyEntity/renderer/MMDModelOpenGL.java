@@ -8,7 +8,6 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderInstance;
@@ -16,6 +15,8 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.LightLayer;
 
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL46C;
 import org.lwjgl.system.MemoryUtil;
 
@@ -254,10 +255,10 @@ public class MMDModelOpenGL implements IMMDModel {
         light1Direction = new Vector3f(-1.0f, 0.75f, 0.0f);
         light0Direction.normalize();
         light1Direction.normalize();
-        light0Direction.transform(Vector3f.YP.rotationDegrees(entityYaw));
-        light1Direction.transform(Vector3f.YP.rotationDegrees(entityYaw));
+        light0Direction.rotate(new Quaternionf().rotateY(entityYaw*((float)Math.PI / 180F)));
+        light1Direction.rotate(new Quaternionf().rotateY(entityYaw*((float)Math.PI / 180F)));
 
-        deliverStack.mulPose(Vector3f.YP.rotationDegrees(-entityYaw));
+        deliverStack.mulPose(new Quaternionf().rotateY(-entityYaw*((float)Math.PI / 180F)));
         deliverStack.scale(0.09f, 0.09f, 0.09f);
 
         if(KAIMyEntity.usingMMDShader == 0){
@@ -349,8 +350,8 @@ public class MMDModelOpenGL implements IMMDModel {
 
         FloatBuffer modelViewMatBuff = MemoryUtil.memAllocFloat(16);
         FloatBuffer projMatBuff = MemoryUtil.memAllocFloat(16);
-        deliverStack.last().pose().store(modelViewMatBuff);
-        RenderSystem.getProjectionMatrix().store(projMatBuff);
+        deliverStack.last().pose().get(modelViewMatBuff);
+        RenderSystem.getProjectionMatrix().get(projMatBuff);
 
         //upload Uniforms(MMDShader)
         if(KAIMyEntity.usingMMDShader == 1){
@@ -511,7 +512,7 @@ public class MMDModelOpenGL implements IMMDModel {
 
     public void setUniforms(ShaderInstance shader, PoseStack deliverStack){
         if(shader.MODEL_VIEW_MATRIX != null)
-            shader.MODEL_VIEW_MATRIX.set(deliverStack.last().pose().copy());
+            shader.MODEL_VIEW_MATRIX.set(deliverStack.last().pose());
 
         if(shader.PROJECTION_MATRIX != null)
             shader.PROJECTION_MATRIX.set(RenderSystem.getProjectionMatrix());
