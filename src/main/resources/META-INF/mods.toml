@@ -21,7 +21,7 @@ modId="kaimyentity" #mandatory
 # see the associated build.gradle script for how to populate this completely automatically during a build
 version="${file.jarVersion}" #mandatory
  # A display name for the mod
-displayName="KAIMyEntity" #mandatory
+displayName="KAIMyEntity-C" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
 #updateJSONURL="" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
@@ -31,7 +31,7 @@ logoFile="icon.png" #optional
 # A text field displayed in the mod UI
 credits="KAIMyEntity" #optional
 # A text field displayed in the mod UI
-authors="kjkjkAIStudio, asuka-mio" #optional
+authors="kjkjkAIStudio, asuka-mio, Gengorou-C" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
 KAIMyEntity
