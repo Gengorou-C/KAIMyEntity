@@ -6,7 +6,7 @@
 # The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
 modLoader="javafml" #mandatory
 # A version range to match for said mod loader - for regular FML @Mod it will be the forge version
-loaderVersion="[41,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+loaderVersion="[44,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 # The license for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
 # Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default here.
 license="MIT"
@@ -21,7 +21,7 @@ modId="kaimyentity" #mandatory
 # see the associated build.gradle script for how to populate this completely automatically during a build
 version="${file.jarVersion}" #mandatory
  # A display name for the mod
-displayName="KAIMyEntity" #mandatory
+displayName="KAIMyEntity-C" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
 #updateJSONURL="" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
@@ -31,7 +31,7 @@ logoFile="icon.png" #optional
 # A text field displayed in the mod UI
 credits="KAIMyEntity" #optional
 # A text field displayed in the mod UI
-authors="kjkjkAIStudio, asuka-mio" #optional
+authors="kjkjkAIStudio, asuka-mio, Gengorou-C" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
 KAIMyEntity
@@ -44,7 +44,7 @@ Replace Minecraft entity with MMD model.
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-    versionRange="[41,)" #mandatory
+    versionRange="[44,)" #mandatory
     # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
