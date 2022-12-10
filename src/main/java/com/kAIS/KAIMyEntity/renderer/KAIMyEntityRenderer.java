@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.resources.ResourceLocation;
 
 public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
@@ -44,6 +45,9 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
         MMDModelManager.Model model = MMDModelManager.GetNotPlayerModel(modelName, animName);
         if (model != null) {
             poseStackIn.pushPose();
+            if(entityIn instanceof LivingEntity)
+                if(((LivingEntity) entityIn).isBaby())
+                    poseStackIn.scale(0.5f, 0.5f, 0.5f);
             RenderSystem.setShader(GameRenderer::getRendertypeEntityCutoutNoCullShader);
             model.model.Render(entityIn, entityYaw, poseStackIn, packedLightIn);
             poseStackIn.popPose();
