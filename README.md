@@ -19,7 +19,7 @@ OpenGLなんかチンプンカンプンで、その上Javaのコードに触れ�
 
 #### ほぼ必須
 
-* [デフォルトのVMDファイル](https://github.com/asuka-mio/KAIMyEntity/releases)
+* デフォルトのVMDファイル([asuka-mio氏のVMDファイル](https://github.com/asuka-mio/KAIMyEntity/releases))
 * [lightMap.png](https://github.com/Gengorou-C/KAIMyEntity-C/releases/tag/requiredFiles)
 
 #### 推奨
