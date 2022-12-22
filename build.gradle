@@ -23,7 +23,7 @@ mixin {
 
     config "mixins.kaimyentity.json"
 }
-version = '20221208'
+version = '20221222'
 group = 'com.kAIS.KAIMyEntity' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'KAIMyEntityC-Forge1.19.3'
 
