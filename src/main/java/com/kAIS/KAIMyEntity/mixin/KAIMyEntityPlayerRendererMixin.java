@@ -206,12 +206,6 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
         String strHand;
         String handState;
 
-        if (axis == "x" ){
-            result = 90.0f;
-        } else if ( axis == "z"){
-            result = 180.0f;
-        }
-
         itemId = getItemId_in_ActiveHand(entityIn,iHand);
 
         if (iHand == InteractionHand.MAIN_HAND){
