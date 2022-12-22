@@ -85,7 +85,8 @@ OpenGLなんかチンプンカンプンで、その上Javaのコードに触れ�
 * 騎乗(ride.vmd)
 * 死亡(die.vmd)
 * 任意のタイミングで再生機能なモーション4つ(custom_[1-4].vmd)
-* 特定のアイテムを特定の腕で使ったときのモーション(itemActive_[itemName]\_[Left or Right]_[using or swinging].vmd)
+* 特定のアイテムを特定の腕で使ったときのモーション  
+(itemActive_[itemName]\_[Left or Right]_[using or swinging].vmd)
 * 乗馬中の移動(onHorse.vmd)
 
 ### other
