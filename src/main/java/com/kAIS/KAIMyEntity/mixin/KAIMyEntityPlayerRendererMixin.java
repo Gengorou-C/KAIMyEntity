@@ -72,7 +72,13 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 } else if (entityIn.isSwimming()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Swim, 0);
                 } else if (entityIn.onClimbable()) {
-                    AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.OnClimbable, 0);
+                    if(entityIn.getY() - entityIn.yOld > 0){
+                        AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.OnClimbableUp, 0);
+                    }else if(entityIn.getY() - entityIn.yOld < 0){
+                        AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.OnClimbableDown, 0);
+                    }else{
+                        AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.OnClimbable, 0);
+                    }
                 } else if (entityIn.isSprinting() && (!entityIn.isCrouching())) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Sprint, 0);
                 } else if (entityIn.getX() - entityIn.xOld != 0.0f || entityIn.getZ() - entityIn.zOld != 0.0f) {
