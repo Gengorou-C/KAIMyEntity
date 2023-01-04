@@ -103,6 +103,7 @@ OpenGLなんかチンプンカンプンで、その上Javaのコードに触れ�
 書き方はReleaseに置いてあるファイルやソースコードを参考にしてください。  
 * lightMap.pngを編集するとモデルに当たる環境光やアイテム由来の光の色が変更できます。  
 (シェーダー使用中はシェーダーの方が優先されます。)
+* [requiredFiles](https://github.com/Gengorou-C/KAIMyEntity-C/releases/tag/requiredFiles)にあるKAIMyEntity.zipに入っているファイルに関しては個人的な改変から自作発言までご自由にお使いください。
 
 #### やりたいこと(達成時期どころか、可能かどうかすら不明のものを含む)
 
