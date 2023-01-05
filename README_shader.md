@@ -30,23 +30,14 @@
 * BSL Shaders(再配布不可)
 ![shader](image/BSL.png)
 
-* Complementary Shaders(再配布不可)
-![shader](image/Complementary.png)
-
 * Continuum Shaders(再配布不可)
 ![shader](image/Continuum.png)
-
-* KUDA Shaders(再配布不可)
-![shader](image/KUDA.png)
 
 * MakeUpUltraFast-legacy
 ![shader](image/MakeUp.png)
 
 * SEUS Renewed(再配布不可)
 ![shader](image/SEUS.png)
-
-* Sildur's Vibrant shaders(再配布不可)
-![shader](image/Sildur's.png)
 
 * Solas Shader
 ![shader](image/Solas.png)
