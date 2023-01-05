@@ -19,7 +19,7 @@ OpenGLなんかチンプンカンプンで、その上Javaのコードに触れ�
 
 #### ほぼ必須
 
-* デフォルトのVMDファイル([asuka-mio氏のVMDファイル](https://github.com/asuka-mio/KAIMyEntity/releases))
+* [デフォルトのVMDファイル](https://github.com/Gengorou-C/KAIMyEntity-C/releases/tag/requiredFiles)
 * [lightMap.png](https://github.com/Gengorou-C/KAIMyEntity-C/releases/tag/requiredFiles)
 
 #### 推奨
@@ -80,7 +80,9 @@ OpenGLなんかチンプンカンプンで、その上Javaのコードに触れ�
 * 左腕でアイテム使用(swingLeft.vmd)
 * エリトラでの飛行(elytraFly.vmd)
 * 水泳(swim.vmd)
-* はしごなどの上り下り(onClimbable.vmd)
+* はしごなどで停止(onClimbable.vmd)
+* はしごなどの上り(onClimbableUp.vmd)
+* はしごなどの下り(onClimbableDown.vmd)
 * 睡眠(sleep.vmd)
 * 騎乗(ride.vmd)
 * 死亡(die.vmd)
@@ -103,9 +105,11 @@ OpenGLなんかチンプンカンプンで、その上Javaのコードに触れ�
 書き方はReleaseに置いてあるファイルやソースコードを参考にしてください。  
 * lightMap.pngを編集するとモデルに当たる環境光やアイテム由来の光の色が変更できます。  
 (シェーダー使用中はシェーダーの方が優先されます。)
+* [requiredFiles](https://github.com/Gengorou-C/KAIMyEntity-C/releases/tag/requiredFiles)にあるKAIMyEntity.zipに入っているファイルに関してはご自由にお使いください。  
+(クレジット表記不要、改変可、再配布可)
 
 #### やりたいこと(達成時期どころか、可能かどうかすら不明のものを含む)
 
 * プレイヤー以外もmodel.propertiesを読み込む
 * エリトラを描画
-* モーション作成
+* ソウルサンドの上に立つとモデルが暗くなるのを修正
