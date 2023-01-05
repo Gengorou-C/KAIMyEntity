@@ -88,7 +88,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 }
 
                 //Layer 1
-                if(!entityIn.isUsingItem() && !entityIn.swinging && !entityIn.isSleeping()){
+                if(!entityIn.isUsingItem() && !entityIn.swinging || entityIn.isSleeping()){
                     if (mwpd.playerData.stateLayers[1] != MMDModelManager.PlayerData.EntityState.Idle) {
                         mwpd.playerData.stateLayers[1] = MMDModelManager.PlayerData.EntityState.Idle;
                         model.ChangeAnim(0, 1);
