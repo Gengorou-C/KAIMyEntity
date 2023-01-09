@@ -18,7 +18,7 @@
 
 ## 編集済みのシェーダー
 
-現在再配布中のシェーダーは以下の通り。  
+現在配布中のシェーダーは以下の通り。  
 
 * (Forgeのみ？)Whipped-Cream([modified](https://github.com/Gengorou-C/Whipped-Cream))([Original](https://github.com/Zi7ar21/Whipped-Cream))
 * Solas Shader([modified](https://github.com/Gengorou-C/Solas-Shader))([Original](https://github.com/Septonious/Solas-Shader))
@@ -50,7 +50,6 @@
 
 ## さいごに
 
-本当なら私自身がシェーダーの講座を書き、シェーダーの編集方法を広められれば良いのですが、私の理解度が全く足りず、できませんでした。  
 編集済みのシェーダーが他のシェーダーを編集する際の手助けになれば幸いです。  
 ライセンス違反等がありましたら是非お知らせください。
 <br>
