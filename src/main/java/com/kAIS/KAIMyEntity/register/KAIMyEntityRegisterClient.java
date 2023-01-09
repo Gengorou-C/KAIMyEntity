@@ -48,7 +48,7 @@ public class KAIMyEntityRegisterClient {
         File[] modelDirs = new File(Minecraft.getInstance().gameDirectory, "KAIMyEntity").listFiles();
         if (modelDirs != null) {
             for (File i : modelDirs) {
-                if (!i.getName().equals("EntityPlayer")) {
+                if (!i.getName().startsWith("EntityPlayer") && !i.getName().equals("DefaultAnim") && !i.getName().equals("Shader")) {
                     String mcEntityName = i.getName().replace('.', ':');
                     if (EntityType.byString(mcEntityName).isPresent()){
                         RR.registerEntityRenderer(EntityType.byString(mcEntityName).get(), new KAIMyEntityRenderFactory<>(mcEntityName));
