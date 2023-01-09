@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 public class NativeFunc {
     private static final String RuntimePath = new File(System.getProperty("java.home")).getParent();
+    private static final String gameDirectory = Minecraft.getInstance().gameDirectory.getAbsolutePath();
     private static final boolean isAndroid = new File("/system/build.prop").exists();
     private static final boolean isLinux = System.getProperty("os.name").toLowerCase().contains("linux");
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("windows");
@@ -37,7 +38,7 @@ public class NativeFunc {
                 System.load(file.getAbsolutePath());
                 return; //File exist and loadable
             } catch (Error e) {
-                KAIMyEntity.logger.info(file.getAbsolutePath() + "broken!Trying recover it!");
+                KAIMyEntity.logger.info("\"" + file.getAbsolutePath() + "\" broken! Trying recover it!");
             }
         }
         try {
@@ -47,7 +48,7 @@ public class NativeFunc {
             System.load(file.getAbsolutePath());
         } catch (IOException e) {
             file.delete();
-            KAIMyEntity.logger.info("Download " + url.getPath() + " failed!");
+            KAIMyEntity.logger.info("Download \"" + url.getPath() + "\" failed!");
             KAIMyEntity.logger.info("Cannot download runtime!");
             KAIMyEntity.logger.info("Check you internet connection and restart game!");
             e.printStackTrace();
@@ -74,7 +75,7 @@ public class NativeFunc {
         try {
             System.load(file.getAbsolutePath());
         } catch (Error e) {
-            KAIMyEntity.logger.info("Runtime(" + file.getAbsolutePath() + ") not found,try download from github!");
+            KAIMyEntity.logger.info("Runtime(" + file.getAbsolutePath() + ") not found, try download from github!");
             throw e;
         }
     }
@@ -83,11 +84,11 @@ public class NativeFunc {
         try {
             if (isWindows) {
                 KAIMyEntity.logger.info("Win32 Env Detected!");
-                LoadLibrary(new File(Minecraft.getInstance().gameDirectory.getAbsolutePath(), "KAIMyEntitySaba.dll"));//WIN32
+                LoadLibrary(new File(gameDirectory, "KAIMyEntitySaba.dll"));//WIN32
             }
             if (isLinux && !isAndroid) {
                 KAIMyEntity.logger.info("Linux Env Detected!");
-                LoadLibrary(new File(Minecraft.getInstance().gameDirectory.getAbsolutePath(), "KAIMyEntitySaba.so"));//Linux
+                LoadLibrary(new File(gameDirectory, "KAIMyEntitySaba.so"));//Linux
             }
             if (isLinux && isAndroid) {
                 KAIMyEntity.logger.info("Android Env Detected!");
