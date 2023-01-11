@@ -19,6 +19,7 @@
 ## 編集済みのシェーダー
 
 現在配布中のシェーダーは以下の通り。  
+リンク先のページで緑色の「Code」をクリックして、「Download ZIP」をクリックするとDLできます。
 
 * (Forgeのみ？)Whipped-Cream([modified](https://github.com/Gengorou-C/Whipped-Cream))([Original](https://github.com/Zi7ar21/Whipped-Cream))
 * Solas Shader([modified](https://github.com/Gengorou-C/Solas-Shader))([Original](https://github.com/Septonious/Solas-Shader))
