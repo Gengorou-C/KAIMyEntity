@@ -20,6 +20,7 @@ import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.world.entity.EntityType;
@@ -64,47 +65,48 @@ public class KAIMyEntityRegisterClient {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void onKeyPressed(InputEvent.Key event) {
+        LocalPlayer localPlayer = Minecraft.getInstance().player;
         if (keyCustomAnim1.isDown()) {
-            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + Minecraft.getInstance().player.getName().getString());
+            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + localPlayer.getName().getString());
             if (m != null) {
-                KAIMyEntityRendererPlayerHelper.CustomAnim(Minecraft.getInstance().player, "1");
-                assert Minecraft.getInstance().player != null;
-                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, Minecraft.getInstance().player.getUUID(), 1));
+                KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, "1");
+                assert localPlayer != null;
+                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 1));
             }
         }
         if (keyCustomAnim2.isDown()) {
-            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + Minecraft.getInstance().player.getName().getString());
+            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + localPlayer.getName().getString());
             if (m != null) {
-                KAIMyEntityRendererPlayerHelper.CustomAnim(Minecraft.getInstance().player, "2");
-                assert Minecraft.getInstance().player != null;
-                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, Minecraft.getInstance().player.getUUID(), 2));
+                KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, "2");
+                assert localPlayer != null;
+                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 2));
             }
         }
         if (keyCustomAnim3.isDown()) {
-            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + Minecraft.getInstance().player.getName().getString());
+            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + localPlayer.getName().getString());
             if (m != null) {
-                KAIMyEntityRendererPlayerHelper.CustomAnim(Minecraft.getInstance().player, "3");
-                assert Minecraft.getInstance().player != null;
-                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, Minecraft.getInstance().player.getUUID(), 3));
+                KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, "3");
+                assert localPlayer != null;
+                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 3));
             }
         }
         if (keyCustomAnim4.isDown()) {
-            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + Minecraft.getInstance().player.getName().getString());
+            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + localPlayer.getName().getString());
             if (m != null) {
-                KAIMyEntityRendererPlayerHelper.CustomAnim(Minecraft.getInstance().player, "4");
-                assert Minecraft.getInstance().player != null;
-                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, Minecraft.getInstance().player.getUUID(), 4));
+                KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, "4");
+                assert localPlayer != null;
+                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(1, localPlayer.getUUID(), 4));
             }
         }
         if (keyReloadModels.isDown()) {
             MMDModelManager.ReloadModel();
         }
         if (keyResetPhysics.isDown()) {
-            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + Minecraft.getInstance().player.getName().getString());
+            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + localPlayer.getName().getString());
             if (m != null) {
-                KAIMyEntityRendererPlayerHelper.ResetPhysics(Minecraft.getInstance().player);
-                assert Minecraft.getInstance().player != null;
-                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(2, Minecraft.getInstance().player.getUUID(), 0));
+                KAIMyEntityRendererPlayerHelper.ResetPhysics(localPlayer);
+                assert localPlayer != null;
+                KAIMyEntityRegisterCommon.channel.sendToServer(new KAIMyEntityNetworkPack(2, localPlayer.getUUID(), 0));
             }
         }
         if (keyReloadProperties.isDown()) {
