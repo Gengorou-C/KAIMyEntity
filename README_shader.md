@@ -4,7 +4,7 @@
 
 不安定なので環境によってはできないかもしれません。  
 
-* OptifineではなくRubidium+OculusまたはSodium+Irisを使う。  
+* Optifineではなく、Rubidium+OculusまたはSodium+Irisを使う。  
 * 使いたいシェーダーを解凍、編集する必要がある場合があります。  
 * MMDShaderを使用している場合はおそらく影が正常に描画されない。  
 * モデルが正常に描画されない場合、
