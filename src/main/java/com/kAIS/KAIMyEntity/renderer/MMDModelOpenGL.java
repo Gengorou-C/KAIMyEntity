@@ -1,6 +1,7 @@
 package com.kAIS.KAIMyEntity.renderer;
 
 import com.kAIS.KAIMyEntity.KAIMyEntity;
+import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.kAIS.KAIMyEntity.NativeFunc;
 
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -257,12 +258,12 @@ public class MMDModelOpenGL implements IMMDModel {
         deliverStack.mulPose(new Quaternionf().rotateY(-entityYaw*((float)Math.PI / 180F)));
         deliverStack.scale(0.09f, 0.09f, 0.09f);
 
-        if(KAIMyEntity.usingMMDShader == 0){
+        if(KAIMyEntityClient.usingMMDShader == 0){
             shaderProgram = RenderSystem.getShader().getId();
             setUniforms(RenderSystem.getShader(), deliverStack);
             RenderSystem.getShader().apply();
         }
-        if(KAIMyEntity.usingMMDShader == 1){
+        if(KAIMyEntityClient.usingMMDShader == 1){
             shaderProgram = MMDShaderProgram;
             GlStateManager._glUseProgram(shaderProgram);
         }
@@ -350,7 +351,7 @@ public class MMDModelOpenGL implements IMMDModel {
         RenderSystem.getProjectionMatrix().get(projMatBuff);
 
         //upload Uniforms(MMDShader)
-        if(KAIMyEntity.usingMMDShader == 1){
+        if(KAIMyEntityClient.usingMMDShader == 1){
             RenderSystem.glUniformMatrix4(modelViewLocation, false, modelViewMatBuff);
             RenderSystem.glUniformMatrix4(projMatLocation, false, projMatBuff);
 
