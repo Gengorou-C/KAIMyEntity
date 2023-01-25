@@ -61,6 +61,7 @@ public class KAIMyEntityRegisterClient {
                 }
             }
         }
+        KAIMyEntity.logger.info("KAIMyEntityRegisterClient.Register() finished.");
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -137,7 +138,6 @@ public class KAIMyEntityRegisterClient {
                 KAIMyEntity.debugStr[j] = "EMPTY";
             }
 		}
-       
 	}
     */
 }

@@ -20,6 +20,7 @@ public class MMDModelManager {
 
     public static void Init() {
         models = new HashMap<>();
+        KAIMyEntity.logger.info("MMDModelManager.Init() finished.");
     }
 
     public static IMMDModel LoadModel(String modelName, long layerCount) {
