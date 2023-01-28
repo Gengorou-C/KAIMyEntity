@@ -1,6 +1,7 @@
 package com.kAIS.KAIMyEntity.register;
 
 import com.kAIS.KAIMyEntity.KAIMyEntity;
+import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.kAIS.KAIMyEntity.network.KAIMyEntityNetworkPack;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRenderFactory;
 import com.kAIS.KAIMyEntity.renderer.KAIMyEntityRendererPlayerHelper;
@@ -59,6 +60,7 @@ public class KAIMyEntityRegisterClient {
                 }
             }
         }
+        KAIMyEntity.logger.info("KAIMyEntityRegisterClient.Register() finished.");
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -109,14 +111,14 @@ public class KAIMyEntityRegisterClient {
             }
         }
         if (keyReloadProperties.isDown()) {
-            KAIMyEntity.reloadProperties = true;
+            KAIMyEntityClient.reloadProperties = true;
         }
         if (keyChangeProgram.isDown()) {
-            KAIMyEntity.usingMMDShader = 1 - KAIMyEntity.usingMMDShader;
+            KAIMyEntityClient.usingMMDShader = 1 - KAIMyEntityClient.usingMMDShader;
             
-            if(KAIMyEntity.usingMMDShader == 0)
+            if(KAIMyEntityClient.usingMMDShader == 0)
                 Minecraft.getInstance().gui.getChat().addMessage(new TextComponent("Default shader"));
-            if(KAIMyEntity.usingMMDShader == 1)
+            if(KAIMyEntityClient.usingMMDShader == 1)
                 Minecraft.getInstance().gui.getChat().addMessage(new TextComponent("MMDShader"));
         }
     }
