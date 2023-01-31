@@ -11,6 +11,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.GameType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -125,9 +126,29 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             if(KAIMyEntityClient.reloadProperties)
                 KAIMyEntityClient.reloadProperties = false;
             poseStackIn.scale(size, size, size);
-            RenderSystem.setShader(GameRenderer::getRendertypeEntityTranslucentShader);
-            model.Render(entityIn, entityYaw, poseStackIn, packedLightIn);
-
+            if(KAIMyEntityClient.calledFrom(6).contains("inventory")){
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                PoseStack PTS_modelViewStack = RenderSystem.getModelViewStack();
+                PTS_modelViewStack.translate(0.0f, 0.0f, 1000.0f);
+                PTS_modelViewStack.pushPose();
+                PTS_modelViewStack.scale(20.0f,20.0f, 20.0f);
+                if(Minecraft.getInstance().gameMode.getPlayerMode() != GameType.CREATIVE)
+                    PTS_modelViewStack.scale(1.5f, 1.5f, 1.5f);
+                Quaternionf quaternionf = (new Quaternionf()).rotateZ((float)Math.PI);
+                Quaternionf quaternionf1 = (new Quaternionf()).rotateX(-entityIn.getXRot() * ((float)Math.PI / 180F));
+                Quaternionf quaternionf2 = (new Quaternionf()).rotateY(-entityIn.yBodyRot * ((float)Math.PI / 180F));
+                quaternionf.mul(quaternionf1);
+                quaternionf.mul(quaternionf2);
+                PTS_modelViewStack.mulPose(quaternionf);
+                RenderSystem.setShader(GameRenderer::getRendertypeEntityTranslucentShader);
+                model.Render(entityIn, entityYaw, PTS_modelViewStack, packedLightIn);
+                PTS_modelViewStack.popPose();
+                poseStackIn.mulPose(quaternionf2);
+                poseStackIn.scale(0.09f, 0.09f, 0.09f);
+            }else{
+                RenderSystem.setShader(GameRenderer::getRendertypeEntityTranslucentShader);
+                model.Render(entityIn, entityYaw, poseStackIn, packedLightIn);
+            }
             NativeFunc nf = NativeFunc.GetInst();
             float rotationDegree = 0.0f;
             nf.GetRightHandMat(model.GetModelLong(), mwpd.playerData.rightHandMat);

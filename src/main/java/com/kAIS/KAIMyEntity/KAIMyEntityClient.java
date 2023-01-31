@@ -121,4 +121,12 @@ public class KAIMyEntityClient {
         }
         return;
     }
+
+    public static String calledFrom(int i){
+        StackTraceElement[] steArray = Thread.currentThread().getStackTrace();
+        if (steArray.length <= i) {
+            return "";
+        }
+        return steArray[i].getClassName();
+    }
 }

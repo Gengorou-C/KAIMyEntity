@@ -1,5 +1,8 @@
 package com.kAIS.KAIMyEntity.renderer;
 
+import org.joml.Quaternionf;
+
+import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -48,8 +51,26 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
             if(entityIn instanceof LivingEntity)
                 if(((LivingEntity) entityIn).isBaby())
                     poseStackIn.scale(0.5f, 0.5f, 0.5f);
-            RenderSystem.setShader(GameRenderer::getRendertypeEntityCutoutNoCullShader);
-            model.model.Render(entityIn, entityYaw, poseStackIn, packedLightIn);
+            
+            if(KAIMyEntityClient.calledFrom(6).contains("inventory")){
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                PoseStack PTS_modelViewStack = RenderSystem.getModelViewStack();
+                PTS_modelViewStack.translate(0.0f, 0.0f, 1000.0f);
+                PTS_modelViewStack.pushPose();
+                PTS_modelViewStack.scale(20.0f,20.0f, 20.0f);
+                Quaternionf quaternionf = (new Quaternionf()).rotateZ((float)Math.PI);
+                Quaternionf quaternionf1 = (new Quaternionf()).rotateX(-entityIn.getXRot() * ((float)Math.PI / 180F));
+                Quaternionf quaternionf2 = (new Quaternionf()).rotateY(-entityIn.getYRot() * ((float)Math.PI / 180F));
+                quaternionf.mul(quaternionf1);
+                quaternionf.mul(quaternionf2);
+                PTS_modelViewStack.mulPose(quaternionf);
+                RenderSystem.setShader(GameRenderer::getRendertypeEntityCutoutNoCullShader);
+                model.model.Render(entityIn, entityYaw, PTS_modelViewStack, packedLightIn);
+                PTS_modelViewStack.popPose();
+            }else{
+                RenderSystem.setShader(GameRenderer::getRendertypeEntityCutoutNoCullShader);
+                model.model.Render(entityIn, entityYaw, poseStackIn, packedLightIn);
+            }
             poseStackIn.popPose();
         }
     }
