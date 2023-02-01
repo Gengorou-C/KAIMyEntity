@@ -62,6 +62,11 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Die, 0);
                 } else if (entityIn.isFallFlying()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.ElytraFly, 0);
+                    Quaternionf quaternionfElytraX = new Quaternionf().rotateX(entityIn.getXRot() * ((float)Math.PI / 180F));
+                    Quaternionf quaternionfElytraY = new Quaternionf().rotateY(-entityIn.yBodyRot * ((float)Math.PI / 180F));
+                    Quaternionf quaternionfElytraYaw = new Quaternionf().rotateY(entityYaw * ((float)Math.PI / 180F));
+                    Quaternionf quaternionfElytra = quaternionfElytraY.mul(quaternionfElytraX);
+                    poseStackIn.mulPose(quaternionfElytra.mul(quaternionfElytraYaw));
                 } else if (entityIn.isSleeping()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Sleep, 0);
                 } else if (entityIn.isPassenger()) {
@@ -72,6 +77,11 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                     }
                 } else if (entityIn.isSwimming()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Swim, 0);
+                    Quaternionf quaternionfElytraX = new Quaternionf().rotateX(entityIn.getXRot() * ((float)Math.PI / 180F));
+                    Quaternionf quaternionfElytraY = new Quaternionf().rotateY(-entityIn.yBodyRot * ((float)Math.PI / 180F));
+                    Quaternionf quaternionfElytraYaw = new Quaternionf().rotateY(entityYaw * ((float)Math.PI / 180F));
+                    Quaternionf quaternionfElytra = quaternionfElytraY.mul(quaternionfElytraX);
+                    poseStackIn.mulPose(quaternionfElytra.mul(quaternionfElytraYaw));
                 } else if (entityIn.onClimbable()) {
                     if(entityIn.getY() - entityIn.yOld > 0){
                         AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.OnClimbableUp, 0);
