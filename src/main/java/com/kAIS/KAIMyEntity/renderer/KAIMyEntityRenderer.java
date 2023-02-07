@@ -65,11 +65,11 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
                 quaternionf.mul(quaternionf2);
                 PTS_modelViewStack.mulPose(quaternionf);
                 RenderSystem.setShader(GameRenderer::getRendertypeEntityCutoutNoCullShader);
-                model.model.Render(entityIn, entityYaw, PTS_modelViewStack, packedLightIn);
+                model.model.Render(entityIn, entityYaw, 0.0f, PTS_modelViewStack, packedLightIn);
                 PTS_modelViewStack.popPose();
             }else{
                 RenderSystem.setShader(GameRenderer::getRendertypeEntityCutoutNoCullShader);
-                model.model.Render(entityIn, entityYaw, poseStackIn, packedLightIn);
+                model.model.Render(entityIn, entityYaw, 0.0f, poseStackIn, packedLightIn);
             }
             poseStackIn.popPose();
         }
