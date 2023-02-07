@@ -70,6 +70,10 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 } else if (entityIn.isPassenger()) {
                     if(entityIn.getVehicle().getType() == EntityType.HORSE && (entityIn.getX() - entityIn.xOld != 0.0f || entityIn.getZ() - entityIn.zOld != 0.0f)){
                         AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.OnHorse, 0);
+                        bodyYaw = entityIn.getVehicle().getYRot();
+                    }else if(entityIn.getVehicle().getType() == EntityType.HORSE){
+                        AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Ride, 0);
+                        bodyYaw = entityIn.getVehicle().getYRot();
                     }else{
                         AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Ride, 0);
                     }
