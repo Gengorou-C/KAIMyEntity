@@ -1,7 +1,10 @@
 package com.kAIS.KAIMyEntity.renderer;
 
+import com.kAIS.KAIMyEntity.KAIMyEntityClient;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.GameRenderer;
@@ -48,8 +51,26 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
             if(entityIn instanceof LivingEntity)
                 if(((LivingEntity) entityIn).isBaby())
                     poseStackIn.scale(0.5f, 0.5f, 0.5f);
-            RenderSystem.setShader(GameRenderer::getRendertypeEntityCutoutNoCullShader);
-            model.model.Render(entityIn, entityYaw, poseStackIn, packedLightIn);
+
+            if(KAIMyEntityClient.calledFrom(6).contains("inventory")){
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                PoseStack PTS_modelViewStack = RenderSystem.getModelViewStack();
+                PTS_modelViewStack.translate(0.0f, 0.0f, 1000.0f);
+                PTS_modelViewStack.pushPose();
+                PTS_modelViewStack.scale(20.0f,20.0f, 20.0f);
+                Quaternion quaternion = Vector3f.ZP.rotationDegrees(180.0f);
+                Quaternion quaternion1 = Vector3f.XP.rotationDegrees(-entityIn.getXRot());
+                Quaternion quaternion2 = Vector3f.YP.rotationDegrees(-entityIn.getYRot());
+                quaternion.mul(quaternion1);
+                quaternion.mul(quaternion2);
+                PTS_modelViewStack.mulPose(quaternion);
+                RenderSystem.setShader(GameRenderer::getRendertypeEntityCutoutNoCullShader);
+                model.model.Render(entityIn, entityYaw, PTS_modelViewStack, packedLightIn);
+                PTS_modelViewStack.popPose();
+            }else{
+                RenderSystem.setShader(GameRenderer::getRendertypeEntityCutoutNoCullShader);
+                model.model.Render(entityIn, entityYaw, poseStackIn, packedLightIn);
+            }
             poseStackIn.popPose();
         }
     }
