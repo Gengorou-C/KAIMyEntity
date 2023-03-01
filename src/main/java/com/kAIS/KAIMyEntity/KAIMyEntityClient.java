@@ -16,6 +16,7 @@ import com.kAIS.KAIMyEntity.register.KAIMyEntityRegisterClient;
 import com.kAIS.KAIMyEntity.renderer.MMDAnimManager;
 import com.kAIS.KAIMyEntity.renderer.MMDModelManager;
 import com.kAIS.KAIMyEntity.renderer.MMDTextureManager;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
@@ -128,5 +129,15 @@ public class KAIMyEntityClient {
             return "";
         }
         return steArray[i].getClassName();
+    }
+
+    public static Vector3f str2Vec3f(String arg){
+        Vector3f vector3f = new Vector3f();
+        String[] splittedStr = arg.split(",");
+        if (splittedStr.length != 3){
+            return new Vector3f(0.0f, 0.0f, 0.0f);
+        }
+        vector3f.set( Float.valueOf(splittedStr[0]), Float.valueOf(splittedStr[1]), Float.valueOf(splittedStr[2]) );
+        return vector3f;
     }
 }
