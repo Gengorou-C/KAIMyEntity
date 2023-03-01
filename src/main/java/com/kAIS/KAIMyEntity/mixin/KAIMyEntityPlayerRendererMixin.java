@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
-
+import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -43,6 +43,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
         IMMDModel model = null;
         float bodyYaw = entityIn.yBodyRot;
         float bodyPitch = 0.0f;
+        Vector3f entityTrans = new Vector3f(0.0f);
         MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + entityIn.getName().getString());
         if (m == null)
             m = MMDModelManager.GetPlayerModel("EntityPlayer");
@@ -54,6 +55,14 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             model = m.model;
 
         MMDModelManager.ModelWithPlayerData mwpd = (MMDModelManager.ModelWithPlayerData) m;
+        mwpd.loadModelProperties(KAIMyEntityClient.reloadProperties);
+        float sleepingPitch = mwpd.properties.getProperty("sleepingPitch") == null ? 0.0f : Float.valueOf(mwpd.properties.getProperty("sleepingPitch"));
+        Vector3f sleepingTrans = mwpd.properties.getProperty("sleepingTrans") == null ? new Vector3f(0.0f) : KAIMyEntityClient.str2Vec3f(mwpd.properties.getProperty("sleepingTrans"));
+        float flyingPitch = mwpd.properties.getProperty("flyingPitch") == null ? 0.0f : Float.valueOf(mwpd.properties.getProperty("flyingPitch"));
+        Vector3f flyingTrans = mwpd.properties.getProperty("flyingTrans") == null ? new Vector3f(0.0f) : KAIMyEntityClient.str2Vec3f(mwpd.properties.getProperty("flyingTrans"));
+        float swimmingPitch = mwpd.properties.getProperty("swimmingPitch") == null ? 0.0f : Float.valueOf(mwpd.properties.getProperty("swimmingPitch"));
+        Vector3f swimmingTrans = mwpd.properties.getProperty("swimmingTrans") == null ? new Vector3f(0.0f) : KAIMyEntityClient.str2Vec3f(mwpd.properties.getProperty("swimmingTrans"));
+
         if (mwpd != null)
             mwpd.loadModelProperties(false);
         
@@ -64,10 +73,13 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Die, 0);
                 } else if (entityIn.isFallFlying()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.ElytraFly, 0);
-                    bodyPitch = entityIn.getXRot();
+                    bodyPitch = entityIn.getXRot() + flyingPitch;
+                    entityTrans = flyingTrans;
                 } else if (entityIn.isSleeping()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Sleep, 0);
                     bodyYaw = entityIn.getBedOrientation().toYRot() + 180.0f;
+                    bodyPitch = sleepingPitch;
+                    entityTrans = sleepingTrans;
                 } else if (entityIn.isPassenger()) {
                     if(entityIn.getVehicle().getType() == EntityType.HORSE && (entityIn.getX() - entityIn.xOld != 0.0f || entityIn.getZ() - entityIn.zOld != 0.0f)){
                         AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.OnHorse, 0);
@@ -80,7 +92,8 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                     }
                 } else if (entityIn.isSwimming()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Swim, 0);
-                    bodyPitch = entityIn.getXRot();
+                    bodyPitch = entityIn.getXRot() + swimmingPitch;
+                    entityTrans = swimmingTrans;
                 } else if (entityIn.onClimbable()) {
                     if(entityIn.getY() - entityIn.yOld > 0){
                         AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.OnClimbableUp, 0);
@@ -130,7 +143,6 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 }
             }
 
-            mwpd.loadModelProperties(KAIMyEntityClient.reloadProperties);
             float size = sizeOfModel(mwpd);
             if(KAIMyEntityClient.reloadProperties)
                 KAIMyEntityClient.reloadProperties = false;
@@ -150,13 +162,13 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 quaternionf.mul(quaternionf2);
                 PTS_modelViewStack.mulPose(quaternionf);
                 RenderSystem.setShader(GameRenderer::getRendertypeEntityTranslucentShader);
-                model.Render(entityIn, entityYaw,0.0f, PTS_modelViewStack, packedLightIn);
+                model.Render(entityIn, entityYaw, 0.0f, new Vector3f(0.0f), PTS_modelViewStack, packedLightIn);
                 PTS_modelViewStack.popPose();
                 poseStackIn.mulPose(quaternionf2);
                 poseStackIn.scale(0.09f, 0.09f, 0.09f);
             }else{
                 RenderSystem.setShader(GameRenderer::getRendertypeEntityTranslucentShader);
-                model.Render(entityIn, bodyYaw, bodyPitch, poseStackIn, packedLightIn);
+                model.Render(entityIn, bodyYaw, bodyPitch, entityTrans, poseStackIn, packedLightIn);
             }
             NativeFunc nf = NativeFunc.GetInst();
             float rotationDegree = 0.0f;
