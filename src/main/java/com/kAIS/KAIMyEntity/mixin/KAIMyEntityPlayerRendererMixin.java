@@ -67,6 +67,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                     bodyPitch = entityIn.getXRot();
                 } else if (entityIn.isSleeping()) {
                     AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.Sleep, 0);
+                    bodyYaw = entityIn.getBedOrientation().toYRot() + 180.0f;
                 } else if (entityIn.isPassenger()) {
                     if(entityIn.getVehicle().getType() == EntityType.HORSE && (entityIn.getX() - entityIn.xOld != 0.0f || entityIn.getZ() - entityIn.zOld != 0.0f)){
                         AnimStateChangeOnce(mwpd, MMDModelManager.PlayerData.EntityState.OnHorse, 0);
