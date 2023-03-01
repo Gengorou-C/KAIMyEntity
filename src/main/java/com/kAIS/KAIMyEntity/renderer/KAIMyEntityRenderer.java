@@ -47,6 +47,8 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
             animName = "idle";
         }
         MMDModelManager.Model model = MMDModelManager.GetNotPlayerModel(modelName, animName);
+        model.loadModelProperties(false);
+        float[] size = sizeOfModel(model);
         if (model != null) {
             poseStackIn.pushPose();
             if(entityIn instanceof LivingEntity)
@@ -56,6 +58,7 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
             if(KAIMyEntityClient.calledFrom(6).contains("inventory")){
                 RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 PoseStack PTS_modelViewStack = RenderSystem.getModelViewStack();
+                PTS_modelViewStack.scale(size[1], size[1], size[1]);
                 PTS_modelViewStack.translate(0.0f, 0.0f, 1000.0f);
                 PTS_modelViewStack.pushPose();
                 PTS_modelViewStack.scale(20.0f,20.0f, 20.0f);
@@ -69,11 +72,19 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
                 model.model.Render(entityIn, entityYaw, 0.0f, new Vector3f(0.0f), PTS_modelViewStack, packedLightIn);
                 PTS_modelViewStack.popPose();
             }else{
+                poseStackIn.scale(size[0], size[0], size[0]);
                 RenderSystem.setShader(GameRenderer::getRendertypeEntityCutoutNoCullShader);
                 model.model.Render(entityIn, entityYaw, 0.0f, new Vector3f(0.0f), poseStackIn, packedLightIn);
             }
             poseStackIn.popPose();
         }
+    }
+
+    float[] sizeOfModel(MMDModelManager.Model model){
+        float[] size = new float[2];
+        size[0] = (model.properties.getProperty("size") == null) ? 1.0f : Float.valueOf(model.properties.getProperty("size"));
+        size[1] = (model.properties.getProperty("size_in_inventory") == null) ? 1.0f : Float.valueOf(model.properties.getProperty("size_in_inventory"));
+        return size;
     }
 
     @Override
