@@ -110,7 +110,5 @@ OpenGLなんかチンプンカンプンで、その上Javaのコードに触れ�
 
 #### やりたいこと(達成時期どころか、可能かどうかすら不明のものを含む)
 
-* プレイヤー以外もmodel.propertiesを読み込む
 * エリトラを描画
 * モーション追加(匍匐前進:crawling.vmd、伏せる:lieDown.vmd)
-* インベントリ内のモデルのサイズをmodel.propertiesで調節(ex : size_in_inventory=1.0f)
