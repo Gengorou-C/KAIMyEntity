@@ -57,10 +57,10 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
             if(KAIMyEntityClient.calledFrom(6).contains("inventory")){
                 RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 PoseStack PTS_modelViewStack = RenderSystem.getModelViewStack();
-                PTS_modelViewStack.scale(size[1], size[1], size[1]);
                 PTS_modelViewStack.translate(0.0f, 0.0f, 1000.0f);
                 PTS_modelViewStack.pushPose();
                 PTS_modelViewStack.scale(20.0f,20.0f, 20.0f);
+                PTS_modelViewStack.scale(size[1], size[1], size[1]);
                 Quaternion quaternion = Vector3f.ZP.rotationDegrees(180.0f);
                 Quaternion quaternion1 = Vector3f.XP.rotationDegrees(-entityIn.getXRot());
                 Quaternion quaternion2 = Vector3f.YP.rotationDegrees(-entityIn.getYRot());
