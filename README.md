@@ -27,7 +27,19 @@ OpenGLなんかチンプンカンプンで、その上Javaのコードに触れ�
 * モデルごとの専用VMDファイル
 * [model.properties](https://github.com/Gengorou-C/KAIMyEntity-C/releases/tag/requiredFiles)
 
-以上のファイルを下記のように配置します。
+### 導入手順
+
+(1)遊ぶマイクラのバージョンと前提Modを確認して、jarファイルをダウンロード、modsフォルダに配置。  
+(2)マイクラを起動。  
+(3)ゲームディレクトリにKAIMyEntityフォルダが無い場合、自動的にZipファイルをDL後に解凍します。  
+(4)ゲームディレクトリにKAIMyEntitySaba.dllが無い場合、自動的にDLします。  
+(5)KAIMyEntityフォルダ内のEntityPlayerフォルダをその場でコピー&ペースト。  
+(6)コピーしたEntityPlayerフォルダを「EntityPlayer_(プレイヤー名)」に改名。  
+(7)EntityPlayer_(プレイヤー名)フォルダにモデルのファイルたちを配置。  
+(8)モデルのファイル名をmodel.pmx(またはmodel.pmd)に変更。  
+(9)ワールドを選択してゲームを開始。
+
+### ファイルの配置例
 
 ```bash
 .
@@ -108,7 +120,7 @@ OpenGLなんかチンプンカンプンで、その上Javaのコードに触れ�
 * [requiredFiles](https://github.com/Gengorou-C/KAIMyEntity-C/releases/tag/requiredFiles)にあるKAIMyEntity.zipに入っているファイルに関してはご自由にお使いください。  
 (クレジット表記不要、改変可、再配布可)
 
-#### やりたいこと(達成時期どころか、可能かどうかすら不明のものを含む)
+### やりたいこと(達成時期どころか、可能かどうかすら不明のものを含む)
 
 * エリトラを描画
 * モーション追加(匍匐前進:crawling.vmd、伏せる:lieDown.vmd)
