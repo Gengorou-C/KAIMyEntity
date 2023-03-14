@@ -118,7 +118,7 @@ public class MMDModelManager {
         MMDAnimManager.DeleteModel(model.model);
     }
 
-    enum EntityState {Idle, Walk, Swim, Ridden, Driven}
+    enum EntityState {Idle, Walk, Swim, Ridden, Driven, Sleep}
 
     static class ModelWithEntityState extends Model {
         EntityState state;
