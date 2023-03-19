@@ -8,6 +8,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -71,9 +72,13 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
             if(KAIMyEntityClient.calledFrom(6).contains("inventory")){
                 RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 PoseStack PTS_modelViewStack = RenderSystem.getModelViewStack();
-                PTS_modelViewStack.translate(0.0f, 0.0f, 1000.0f);
+                int PosX_in_inventory;
+                int PosY_in_inventory;
+                PosX_in_inventory = (Minecraft.getInstance().screen.width - 176) / 2;
+                PosY_in_inventory = (Minecraft.getInstance().screen.height - 166) / 2;
+                PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+60, -950.0);
                 PTS_modelViewStack.pushPose();
-                PTS_modelViewStack.scale(20.0f,20.0f, 20.0f);
+                PTS_modelViewStack.scale(20.0f,20.0f, -20.0f);
                 PTS_modelViewStack.scale(size[1], size[1], size[1]);
                 Quaternionf quaternionf = (new Quaternionf()).rotateZ((float)Math.PI);
                 Quaternionf quaternionf1 = (new Quaternionf()).rotateX(-entityIn.getXRot() * ((float)Math.PI / 180F));

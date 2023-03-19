@@ -159,12 +159,21 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             if(KAIMyEntityClient.calledFrom(6).contains("inventory")){
                 RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 PoseStack PTS_modelViewStack = RenderSystem.getModelViewStack();
-                PTS_modelViewStack.translate(0.0f, 0.0f, 1000.0f);
                 PTS_modelViewStack.pushPose();
-                PTS_modelViewStack.scale(20.0f,20.0f, 20.0f);
-                PTS_modelViewStack.scale(size[1],size[1], size[1]);
-                if(Minecraft.getInstance().gameMode.getPlayerMode() != GameType.CREATIVE)
+                int PosX_in_inventory;
+                int PosY_in_inventory;
+                if(Minecraft.getInstance().gameMode.getPlayerMode() != GameType.CREATIVE){
+                    PosX_in_inventory = (Minecraft.getInstance().screen.width - 176) / 2;
+                    PosY_in_inventory = (Minecraft.getInstance().screen.height - 166) / 2;
+                    PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+75, -950.0);
                     PTS_modelViewStack.scale(1.5f, 1.5f, 1.5f);
+                }else{
+                    PosX_in_inventory = (Minecraft.getInstance().screen.width - 121) / 2;
+                    PosY_in_inventory = (Minecraft.getInstance().screen.height - 195) / 2;
+                    PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+75, -950.0);
+                }
+                PTS_modelViewStack.scale(size[1], size[1], size[1]);
+                PTS_modelViewStack.scale(20.0f,20.0f, -20.0f);
                 Quaternionf quaternionf = (new Quaternionf()).rotateZ((float)Math.PI);
                 Quaternionf quaternionf1 = (new Quaternionf()).rotateX(-entityIn.getXRot() * ((float)Math.PI / 180F));
                 Quaternionf quaternionf2 = (new Quaternionf()).rotateY(-entityIn.yBodyRot * ((float)Math.PI / 180F));
