@@ -14,6 +14,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -163,7 +164,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 int PosX_in_inventory;
                 int PosY_in_inventory;
                 if(Minecraft.getInstance().gameMode.getPlayerMode() != GameType.CREATIVE){
-                    PosX_in_inventory = (Minecraft.getInstance().screen.width - 176) / 2;
+                    PosX_in_inventory = ((InventoryScreen)Minecraft.getInstance().screen).getRecipeBookComponent().updateScreenPosition(Minecraft.getInstance().screen.width, 176);
                     PosY_in_inventory = (Minecraft.getInstance().screen.height - 166) / 2;
                     PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+75, -950.0);
                     PTS_modelViewStack.scale(1.5f, 1.5f, 1.5f);
