@@ -40,6 +40,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     public void render(AbstractClientPlayer entityIn, float entityYaw, float partialTicks, PoseStack poseStackIn, MultiBufferSource bufferIn, int packedLightIn, CallbackInfo ci) {
+        Minecraft MCinstance = Minecraft.getInstance();
         IMMDModel model = null;
         float bodyYaw = entityIn.yBodyRot;
         float bodyPitch = 0.0f;
@@ -163,7 +164,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 PTS_modelViewStack.pushPose();
                 PTS_modelViewStack.scale(20.0f,20.0f, 20.0f);
                 PTS_modelViewStack.scale(size[1], size[1], size[1]);
-                if(Minecraft.getInstance().gameMode.getPlayerMode() != GameType.CREATIVE)
+                if(MCinstance.gameMode.getPlayerMode() != GameType.CREATIVE)
                     PTS_modelViewStack.scale(1.5f, 1.5f, 1.5f);
                 Quaternion quaternion = Vector3f.ZP.rotationDegrees(180.0f);
                 Quaternion quaternion1 = Vector3f.XP.rotationDegrees(-entityIn.getXRot());
