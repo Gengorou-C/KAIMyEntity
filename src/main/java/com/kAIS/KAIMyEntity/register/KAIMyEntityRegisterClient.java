@@ -42,12 +42,13 @@ public class KAIMyEntityRegisterClient {
     static KeyMapping keyChangeProgram = new KeyMapping("key.changeProgram", KeyConflictContext.IN_GAME, KeyModifier.NONE, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_KP_0, "key.title");
 
     public static void Register() {
+        Minecraft MCinstance = Minecraft.getInstance();
         RegisterRenderers RR = new RegisterRenderers();
-        RegisterKeyMappingsEvent RKE = new RegisterKeyMappingsEvent(Minecraft.getInstance().options);
+        RegisterKeyMappingsEvent RKE = new RegisterKeyMappingsEvent(MCinstance.options);
         for (KeyMapping i : new KeyMapping[]{keyCustomAnim1, keyCustomAnim2, keyCustomAnim3, keyCustomAnim4, keyReloadModels, keyResetPhysics, keyReloadProperties, keyChangeProgram})
             RKE.register(i);
 
-        File[] modelDirs = new File(Minecraft.getInstance().gameDirectory, "KAIMyEntity").listFiles();
+        File[] modelDirs = new File(MCinstance.gameDirectory, "KAIMyEntity").listFiles();
         if (modelDirs != null) {
             for (File i : modelDirs) {
                 if (!i.getName().startsWith("EntityPlayer") && !i.getName().equals("DefaultAnim") && !i.getName().equals("Shader")) {
@@ -67,7 +68,8 @@ public class KAIMyEntityRegisterClient {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void onKeyPressed(InputEvent.Key event) {
-        LocalPlayer localPlayer = Minecraft.getInstance().player;
+        Minecraft MCinstance = Minecraft.getInstance();
+        LocalPlayer localPlayer = MCinstance.player;
         if (keyCustomAnim1.isDown()) {
             MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + localPlayer.getName().getString());
             if (m != null) {
@@ -118,9 +120,9 @@ public class KAIMyEntityRegisterClient {
             KAIMyEntityClient.usingMMDShader = 1 - KAIMyEntityClient.usingMMDShader;
             
             if(KAIMyEntityClient.usingMMDShader == 0)
-                Minecraft.getInstance().gui.getChat().addMessage(Component.literal("Default shader"));
+                MCinstance.gui.getChat().addMessage(Component.literal("Default shader"));
             if(KAIMyEntityClient.usingMMDShader == 1)
-                Minecraft.getInstance().gui.getChat().addMessage(Component.literal("MMDShader"));
+                MCinstance.gui.getChat().addMessage(Component.literal("MMDShader"));
         }
     }
     

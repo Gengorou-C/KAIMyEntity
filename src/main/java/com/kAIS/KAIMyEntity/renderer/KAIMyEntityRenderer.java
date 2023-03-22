@@ -34,6 +34,7 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
 
     @Override
     public void render(T entityIn, float entityYaw, float partialTicks, PoseStack poseStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+        Minecraft MCinstance = Minecraft.getInstance();
         super.render(entityIn, entityYaw, partialTicks, poseStackIn, bufferIn, packedLightIn);
         String animName;
         float bodyYaw = entityYaw;
@@ -74,8 +75,8 @@ public class KAIMyEntityRenderer<T extends Entity> extends EntityRenderer<T> {
                 PoseStack PTS_modelViewStack = RenderSystem.getModelViewStack();
                 int PosX_in_inventory;
                 int PosY_in_inventory;
-                PosX_in_inventory = (Minecraft.getInstance().screen.width - 176) / 2;
-                PosY_in_inventory = (Minecraft.getInstance().screen.height - 166) / 2;
+                PosX_in_inventory = (MCinstance.screen.width - 176) / 2;
+                PosY_in_inventory = (MCinstance.screen.height - 166) / 2;
                 PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+60, -950.0);
                 PTS_modelViewStack.pushPose();
                 PTS_modelViewStack.scale(20.0f,20.0f, -20.0f);

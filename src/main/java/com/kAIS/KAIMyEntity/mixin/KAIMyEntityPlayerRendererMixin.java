@@ -41,6 +41,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     public void render(AbstractClientPlayer entityIn, float entityYaw, float partialTicks, PoseStack poseStackIn, MultiBufferSource bufferIn, int packedLightIn, CallbackInfo ci) {
+        Minecraft MCinstance = Minecraft.getInstance();
         IMMDModel model = null;
         float bodyYaw = entityIn.yBodyRot;
         float bodyPitch = 0.0f;
@@ -163,14 +164,14 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 PTS_modelViewStack.pushPose();
                 int PosX_in_inventory;
                 int PosY_in_inventory;
-                if(Minecraft.getInstance().gameMode.getPlayerMode() != GameType.CREATIVE){
-                    PosX_in_inventory = ((InventoryScreen)Minecraft.getInstance().screen).getRecipeBookComponent().updateScreenPosition(Minecraft.getInstance().screen.width, 176);
-                    PosY_in_inventory = (Minecraft.getInstance().screen.height - 166) / 2;
+                if(MCinstance.gameMode.getPlayerMode() != GameType.CREATIVE){
+                    PosX_in_inventory = ((InventoryScreen)MCinstance.screen).getRecipeBookComponent().updateScreenPosition(MCinstance.screen.width, 176);
+                    PosY_in_inventory = (MCinstance.screen.height - 166) / 2;
                     PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+75, -950.0);
                     PTS_modelViewStack.scale(1.5f, 1.5f, 1.5f);
                 }else{
-                    PosX_in_inventory = (Minecraft.getInstance().screen.width - 121) / 2;
-                    PosY_in_inventory = (Minecraft.getInstance().screen.height - 195) / 2;
+                    PosX_in_inventory = (MCinstance.screen.width - 121) / 2;
+                    PosY_in_inventory = (MCinstance.screen.height - 195) / 2;
                     PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+75, -950.0);
                 }
                 PTS_modelViewStack.scale(size[1], size[1], size[1]);
@@ -202,7 +203,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             rotationDegree = ItemRotaionDegree(entityIn, mwpd, InteractionHand.MAIN_HAND, "x");
             poseStackIn.mulPose(new Quaternionf().rotateX(rotationDegree*((float)Math.PI / 180F)));
             poseStackIn.scale(10.0f, 10.0f, 10.0f); 
-            Minecraft.getInstance().getItemRenderer().renderStatic(entityIn, entityIn.getMainHandItem(), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, false, poseStackIn, bufferIn, entityIn.level, packedLightIn, OverlayTexture.NO_OVERLAY, 0);
+            MCinstance.getItemRenderer().renderStatic(entityIn, entityIn.getMainHandItem(), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, false, poseStackIn, bufferIn, entityIn.level, packedLightIn, OverlayTexture.NO_OVERLAY, 0);
             poseStackIn.popPose();
 
             nf.GetLeftHandMat(model.GetModelLong(), mwpd.playerData.leftHandMat);
@@ -213,7 +214,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             rotationDegree = ItemRotaionDegree(entityIn, mwpd, InteractionHand.OFF_HAND, "x");
             poseStackIn.mulPose(new Quaternionf().rotateX(rotationDegree*((float)Math.PI / 180F)));
             poseStackIn.scale(10.0f, 10.0f, 10.0f);
-            Minecraft.getInstance().getItemRenderer().renderStatic(entityIn, entityIn.getOffhandItem(), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, true, poseStackIn, bufferIn, entityIn.level, packedLightIn, OverlayTexture.NO_OVERLAY, 0);
+            MCinstance.getItemRenderer().renderStatic(entityIn, entityIn.getOffhandItem(), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, true, poseStackIn, bufferIn, entityIn.level, packedLightIn, OverlayTexture.NO_OVERLAY, 0);
             poseStackIn.popPose();
         }
         ci.cancel();//Added By FMyuchuan. | 隐藏模型脚下的史蒂夫

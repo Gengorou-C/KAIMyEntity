@@ -247,7 +247,7 @@ public class MMDModelOpenGL implements IMMDModel {
     }
 
     void RenderModel(Entity entityIn, float entityYaw, float entityPitch, Vector3f entityTrans, PoseStack deliverStack) {
-        Minecraft minecraft = Minecraft.getInstance();
+        Minecraft MCinstance = Minecraft.getInstance();
         light0Direction = new Vector3f(1.0f, 0.75f, 0.0f);
         light1Direction = new Vector3f(-1.0f, 0.75f, 0.0f);
         light0Direction.normalize();
@@ -312,9 +312,9 @@ public class MMDModelOpenGL implements IMMDModel {
         }
 
         //UV2
-        minecraft.level.updateSkyBrightness();
+        MCinstance.level.updateSkyBrightness();
         int blockBrightness = 16 * entityIn.level.getBrightness(LightLayer.BLOCK, entityIn.blockPosition().above((int)(entityIn.getEyeY()-entityIn.getBlockY())));
-        int skyBrightness = Math.round((15.0f-minecraft.level.getSkyDarken()) * (entityIn.level.getBrightness(LightLayer.SKY, entityIn.blockPosition().above((int)(entityIn.getEyeY()-entityIn.getBlockY())))/15.0f) * 16);
+        int skyBrightness = Math.round((15.0f-MCinstance.level.getSkyDarken()) * (entityIn.level.getBrightness(LightLayer.SKY, entityIn.blockPosition().above((int)(entityIn.getEyeY()-entityIn.getBlockY())))/15.0f) * 16);
         uv2Buffer.clear();
         for(int i = 0; i < vertexCount; i++){
             uv2Buffer.putInt(blockBrightness);
@@ -482,7 +482,7 @@ public class MMDModelOpenGL implements IMMDModel {
                 RenderSystem.enableCull();
             }
             if (mats[materialID].tex == 0)
-                Minecraft.getInstance().getEntityRenderDispatcher().textureManager.bindForSetup(TextureManager.INTENTIONAL_MISSING_TEXTURE);
+                MCinstance.getEntityRenderDispatcher().textureManager.bindForSetup(TextureManager.INTENTIONAL_MISSING_TEXTURE);
             else
                 GL46C.glBindTexture(GL46C.GL_TEXTURE_2D, mats[materialID].tex);
             long startPos = (long) nf.GetSubMeshBeginIndex(model, i) * indexElementSize;
