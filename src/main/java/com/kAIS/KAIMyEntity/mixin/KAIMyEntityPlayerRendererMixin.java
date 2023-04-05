@@ -47,14 +47,16 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
         float bodyPitch = 0.0f;
         Vector3f entityTrans = new Vector3f(0.0f);
         MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + entityIn.getName().getString());
-        if (m == null)
+        if (m == null){
             m = MMDModelManager.GetPlayerModel("EntityPlayer");
+        }
         if (m == null){
             super.render(entityIn, entityYaw, partialTicks, poseStackIn, bufferIn, packedLightIn);
             return;
         } 
-        if (m != null)
+        if (m != null){
             model = m.model;
+        }
 
         MMDModelManager.ModelWithPlayerData mwpd = (MMDModelManager.ModelWithPlayerData) m;
         mwpd.loadModelProperties(KAIMyEntityClient.reloadProperties);
@@ -66,10 +68,8 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
         Vector3f swimmingTrans = mwpd.properties.getProperty("swimmingTrans") == null ? new Vector3f(0.0f) : KAIMyEntityClient.str2Vec3f(mwpd.properties.getProperty("swimmingTrans"));
         float crawlingPitch = mwpd.properties.getProperty("crawlingPitch") == null ? 0.0f : Float.valueOf(mwpd.properties.getProperty("crawlingPitch"));
         Vector3f crawlingTrans = mwpd.properties.getProperty("crawlingTrans") == null ? new Vector3f(0.0f) : KAIMyEntityClient.str2Vec3f(mwpd.properties.getProperty("crawlingTrans"));
+        float[] size = sizeOfModel(mwpd);
 
-        if (mwpd != null)
-            mwpd.loadModelProperties(false);
-        
         if (model != null) {
             if (!mwpd.playerData.playCustomAnim) {
                 //Layer 0
@@ -155,9 +155,6 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 }
             }
 
-            float[] size = sizeOfModel(mwpd);
-            if(KAIMyEntityClient.reloadProperties)
-                KAIMyEntityClient.reloadProperties = false;
             if(KAIMyEntityClient.calledFrom(6).contains("inventory")){
                 RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 PoseStack PTS_modelViewStack = RenderSystem.getModelViewStack();
