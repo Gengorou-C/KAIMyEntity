@@ -61,7 +61,7 @@ public class KAIMyEntityNetworkPack {
             return;
         switch (opCode) {
             case 1: {
-                MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + MCinstance.player.getName().getString());
+                MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + MCinstance.player.getName().getString());
                 assert Minecraft.getInstance().level != null;
                 Player target = MCinstance.level.getPlayerByUUID(playerUUID);
                 if (m != null && target != null)
@@ -69,7 +69,7 @@ public class KAIMyEntityNetworkPack {
                 break;
             }
             case 2: {
-                MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + MCinstance.player.getName().getString());
+                MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + MCinstance.player.getName().getString());
                 assert Minecraft.getInstance().level != null;
                 Player target = MCinstance.level.getPlayerByUUID(playerUUID);
                 if (m != null && target != null)
