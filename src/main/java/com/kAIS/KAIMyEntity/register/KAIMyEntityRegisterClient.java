@@ -71,7 +71,7 @@ public class KAIMyEntityRegisterClient {
         Minecraft MCinstance = Minecraft.getInstance();
         LocalPlayer localPlayer = MCinstance.player;
         if (keyCustomAnim1.isDown()) {
-            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + localPlayer.getName().getString());
+            MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + localPlayer.getName().getString());
             if (m != null) {
                 KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, "1");
                 assert localPlayer != null;
@@ -79,7 +79,7 @@ public class KAIMyEntityRegisterClient {
             }
         }
         if (keyCustomAnim2.isDown()) {
-            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + localPlayer.getName().getString());
+            MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + localPlayer.getName().getString());
             if (m != null) {
                 KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, "2");
                 assert localPlayer != null;
@@ -87,7 +87,7 @@ public class KAIMyEntityRegisterClient {
             }
         }
         if (keyCustomAnim3.isDown()) {
-            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + localPlayer.getName().getString());
+            MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + localPlayer.getName().getString());
             if (m != null) {
                 KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, "3");
                 assert localPlayer != null;
@@ -95,7 +95,7 @@ public class KAIMyEntityRegisterClient {
             }
         }
         if (keyCustomAnim4.isDown()) {
-            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + localPlayer.getName().getString());
+            MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + localPlayer.getName().getString());
             if (m != null) {
                 KAIMyEntityRendererPlayerHelper.CustomAnim(localPlayer, "4");
                 assert localPlayer != null;
@@ -106,7 +106,7 @@ public class KAIMyEntityRegisterClient {
             MMDModelManager.ReloadModel();
         }
         if (keyResetPhysics.isDown()) {
-            MMDModelManager.Model m = MMDModelManager.GetPlayerModel("EntityPlayer_" + localPlayer.getName().getString());
+            MMDModelManager.Model m = MMDModelManager.GetModel("EntityPlayer_" + localPlayer.getName().getString());
             if (m != null) {
                 KAIMyEntityRendererPlayerHelper.ResetPhysics(localPlayer);
                 assert localPlayer != null;
