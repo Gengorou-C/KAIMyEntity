@@ -164,12 +164,12 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
                 if(MCinstance.gameMode.getPlayerMode() != GameType.CREATIVE){
                     PosX_in_inventory = ((InventoryScreen)MCinstance.screen).getRecipeBookComponent().updateScreenPosition(MCinstance.screen.width, 176);
                     PosY_in_inventory = (MCinstance.screen.height - 166) / 2;
-                    PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+75, -950.0);
+                    PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+75, 50.0);
                     PTS_modelViewStack.scale(1.5f, 1.5f, 1.5f);
                 }else{
                     PosX_in_inventory = (MCinstance.screen.width - 121) / 2;
                     PosY_in_inventory = (MCinstance.screen.height - 195) / 2;
-                    PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+75, -950.0);
+                    PTS_modelViewStack.translate(PosX_in_inventory+51, PosY_in_inventory+75, 50.0);
                 }
                 PTS_modelViewStack.scale(size[1], size[1], size[1]);
                 PTS_modelViewStack.scale(20.0f,20.0f, -20.0f);
@@ -200,7 +200,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             rotationDegree = ItemRotaionDegree(entityIn, mwed, InteractionHand.MAIN_HAND, "x");
             poseStackIn.mulPose(new Quaternionf().rotateX(rotationDegree*((float)Math.PI / 180F)));
             poseStackIn.scale(10.0f, 10.0f, 10.0f); 
-            MCinstance.getItemRenderer().renderStatic(entityIn, entityIn.getMainHandItem(), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, false, poseStackIn, bufferIn, entityIn.level, packedLightIn, OverlayTexture.NO_OVERLAY, 0);
+            MCinstance.getItemRenderer().renderStatic(entityIn, entityIn.getMainHandItem(), ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, false, poseStackIn, bufferIn, entityIn.level(), packedLightIn, OverlayTexture.NO_OVERLAY, 0);
             poseStackIn.popPose();
 
             nf.GetLeftHandMat(model.GetModelLong(), mwed.entityData.leftHandMat);
@@ -211,7 +211,7 @@ public abstract class KAIMyEntityPlayerRendererMixin extends LivingEntityRendere
             rotationDegree = ItemRotaionDegree(entityIn, mwed, InteractionHand.OFF_HAND, "x");
             poseStackIn.mulPose(new Quaternionf().rotateX(rotationDegree*((float)Math.PI / 180F)));
             poseStackIn.scale(10.0f, 10.0f, 10.0f);
-            MCinstance.getItemRenderer().renderStatic(entityIn, entityIn.getOffhandItem(), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, true, poseStackIn, bufferIn, entityIn.level, packedLightIn, OverlayTexture.NO_OVERLAY, 0);
+            MCinstance.getItemRenderer().renderStatic(entityIn, entityIn.getOffhandItem(), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, true, poseStackIn, bufferIn, entityIn.level(), packedLightIn, OverlayTexture.NO_OVERLAY, 0);
             poseStackIn.popPose();
         }
         ci.cancel();//Added By FMyuchuan. | 隐藏模型脚下的史蒂夫
